@@ -1,7 +1,7 @@
 from datasets import load_dataset
 from eval import evaluate_score_cruxeval
 from prompts import make_cot_input_prompt, make_cot_output_prompt_cruxeval
-from typing import Dict
+from typing import Dict, Optional
 
 class CruxEnv:
     def __init__(self, config):
@@ -25,10 +25,13 @@ class CruxEnv:
     def set_problem(self, idx):
         self.problem = self.crux_dataset[idx]
         
-    def get_problem_statement(self):
+    def get_problem_statement(self, make_prompt_func: Optional[callable]=None):
         example = self.problem
         s = (example["code"], example["output" if self.config.subset == "output" else "input"])
-        prompt = self.make_prompt_func(s)
+        if make_prompt_func is None:
+            prompt = self.make_prompt_func(s)
+        else:
+            prompt = make_prompt_func(s)
         return prompt
     
     def get_code(self):
