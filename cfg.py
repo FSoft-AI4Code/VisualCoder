@@ -87,7 +87,9 @@ class CFG:
         self.edges: Dict[Tuple[int, int], Type[ast.AST]] = {}
         self.graph: Optional[gv.dot.Digraph] = None
         self.execution_path: List[int] = []
+        self.error: bool = False
         self.path: List[int] = []
+        self.func_name: List[str] = []
 
     def clean(self):
         des_edges = {}
@@ -125,7 +127,7 @@ class CFG:
                 if node in self.blocks[i].next:
                     self.blocks[i].next.remove(node)
                     
-    def track_execution(self, filename):
+    def track_execution(self, filename, func_name = None):
         nodes = []
         blocks = []
         matching = {}
@@ -167,7 +169,11 @@ class CFG:
             '__package__': None,
             '__cached__': None,
         }
-        t.runctx(code, globs, globs)
+        error = False
+        try:
+            t.runctx(code, globs, globs)
+        except:
+            error = True
 
         source = linecache.getlines(filename)
         code_line = [element.lstrip().replace('\n', '') for element in source]
@@ -175,6 +181,8 @@ class CFG:
         for lineno in t.exe_path:
             no_spaces = re.sub(r"\s+", "", code_line[lineno-1])
             if no_spaces.startswith("def") or no_spaces.startswith("assert"):
+                continue
+            if no_spaces.startswith(func_name):
                 continue
             if no_spaces.startswith("elif"):
                 no_spaces = no_spaces[2:]
@@ -237,9 +245,9 @@ class CFG:
         path.append(node_max)
 
         self.path = path
-        return true_execution
+        return true_execution, error
 
-    def _traverse(self, block: BasicBlock, visited: Set[int] = set(), calls: bool = True) -> None:
+    def _traverse(self, block: BasicBlock, visited: Set[int] = set(), calls: bool = True, error: bool = False) -> None:
         if block.bid not in visited:
             visited.add(block.bid)
             st = block.stmts_to_code()
@@ -247,31 +255,34 @@ class CFG:
             # Check if the block is in the path and highlight it
             node_attributes = {'shape': 'ellipse'}
             if block.bid in self.path:
-                node_attributes['color'] = 'red'
+                if error:
+                    node_attributes['color'] = 'red'
+                else:
+                    node_attributes['color'] = 'green'
                 node_attributes['style'] = 'filled'
 
             self.graph.node(str(block.bid), label=st, _attributes=node_attributes)
             # block.next contain some duplicate values, only keep the unique values
             for next_bid in set(block.next):
-                self._traverse(self.blocks[next_bid], visited, calls=calls)
+                self._traverse(self.blocks[next_bid], visited, calls=calls, error=error)
                 self.graph.edge(str(block.bid), str(next_bid), label=self.edges[(block.bid, next_bid)] if type(self.edges[(block.bid, next_bid)]) == str else '')
         return visited
 
-    def _show(self, get_coverage: bool = False, fmt: str = 'png', calls: bool = True, node: int = 0) -> gv.dot.Digraph:
+    def _show(self, get_coverage: bool = False, fmt: str = 'png', calls: bool = True, node: int = 0, error: bool = False) -> gv.dot.Digraph:
         self.graph = gv.Digraph(name='cluster_' + self.name, format=fmt)
         if node != 0:
             visited = set()
             self.path = [node]
-            visited = self._traverse(self.start, visited, calls=calls)
+            visited = self._traverse(self.start, visited, calls=calls, error=error)
         else:
             self._traverse(self.start, calls=calls)
         for k, v in self.func_calls.items():
             if node == 0:
                 if get_coverage or get_execution:
-                    self.execution_path = v.track_execution(self.name)
+                    self.execution_path, self.error = v.track_execution(self.name, k)
                 self.graph.subgraph(v._show(False, fmt, calls))
             else:
-                self.graph.subgraph(v._show(False, fmt, calls, node))
+                self.graph.subgraph(v._show(False, fmt, calls, node, error))
         return self.graph
 
 
@@ -287,8 +298,11 @@ class CFG:
             os.makedirs(folder_path)
         for node in self.execution_path:
             self.graph = None
-            self._show(False, fmt, calls, node)
-            filepath = f'{folder_path}/cfg_{count}'
+            if count == len(self.execution_path):
+                self._show(False, fmt, calls, node,  error=self.error)
+            else:
+                self._show(False, fmt, calls, node)
+            filepath = f'{folder_path}/execution_{count}'
             self.graph.render(filepath, cleanup=True)
             count += 1
 
@@ -298,8 +312,6 @@ class CFG:
         for file_name in png_files:
             file_path = os.path.join(folder_path, file_name)
             images.append(Image.open(file_path))
-            os.remove(file_path)
-        os.rmdir(folder_path)
 
         # Save as GIF
         gif_path = "./execution.gif"
@@ -364,6 +376,7 @@ class CFGVisitor(ast.NodeVisitor):
             return loop_block
 
     def add_subgraph(self, tree: Type[ast.AST]) -> None:
+        self.cfg.func_name.append(tree.name)
         self.cfg.func_calls[tree.name] = CFGVisitor().build(tree.name, ast.Module(body=tree.body))
 
     def add_condition(self, cond1: Optional[Type[ast.AST]], cond2: Optional[Type[ast.AST]]) -> Optional[Type[ast.AST]]:
