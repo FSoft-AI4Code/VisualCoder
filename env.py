@@ -27,7 +27,7 @@ class CruxEnv:
         
     def get_problem_statement(self, make_prompt_func: Optional[callable]=None):
         example = self.problem
-        s = (example["code"], example["output" if self.config.subset == "output" else "input"])
+        s = (example["code"], example["input" if self.config.subset == "output" else "output"])
         if make_prompt_func is None:
             prompt = self.make_prompt_func(s)
         else:
@@ -55,7 +55,6 @@ class CruxEnv:
                 solution = solution.split("\n[/ANSWER]")[0].strip()
             if "==" in solution:
                 solution = solution.split("==")[1].strip()  
-                
         eval_arg = [solution], reference, self.config.subset
         results = evaluate_score_cruxeval(eval_arg)
         if results[0]:
