@@ -182,7 +182,7 @@ class CFG:
             no_spaces = re.sub(r"\s+", "", code_line[lineno-1])
             if no_spaces.startswith("def") or no_spaces.startswith("assert"):
                 continue
-            if no_spaces.startswith(func_name):
+            if no_spaces.startswith(f'{func_name}('):
                 continue
             if no_spaces.startswith("elif"):
                 no_spaces = no_spaces[2:]
