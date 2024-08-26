@@ -278,7 +278,7 @@ class CFG:
             self._traverse(self.start, calls=calls)
         for k, v in self.func_calls.items():
             if node == 0:
-                if get_coverage or get_execution:
+                if get_coverage:
                     self.execution_path, self.error = v.track_execution(self.name, k)
                 self.graph.subgraph(v._show(False, fmt, calls))
             else:
