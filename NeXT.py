@@ -11,18 +11,26 @@ class ExecutionTracer:
         self.tracer = trace_execution.Trace(count=False, trace=True, countfuncs=False, countcallers=False)
         self.execution_trace = []
         self.idx = 0
+        self.error = None
+        self.asserterror = False
 
     def trace_execution(self, frame, event, arg):
-        if '__builtins__' not in frame.f_locals and ".0" not in frame.f_locals and len(frame.f_locals) > 0 and 'code' not in frame.f_locals:
+        if '__builtins__' not in frame.f_locals and ".0" not in frame.f_locals and len(frame.f_locals) > 0:
             code = frame.f_code
             lineno = frame.f_lineno
             locals_snapshot = copy.deepcopy(frame.f_locals) 
             self.execution_trace.append([lineno, locals_snapshot])
         return self.trace_execution
 
-    def start_tracing(self, func):
+    def start_tracing(self, code):
         sys.settrace(self.trace_execution)
-        func()
+        try:
+            exec(code, {})
+        except AssertionError as e:
+            self.error = e
+            self.asserterror = True
+        except Exception as e:
+            self.error = e
         sys.settrace(None)
 
     def get_execution_trace(self):
@@ -44,16 +52,16 @@ def generate_commented_code(file_path, in_line_cmt):
                 last_comment = comments[-1]
 
                 # Handle NO_CHANGE scenario
-                if isinstance(first_comment[1], str) and first_comment[1] == "NO_CHANGE":
-                    first_comment_str = f"({first_comment[0]}) NO_CHANGE"
+                if isinstance(first_comment[1], str):
+                    first_comment_str = f"({first_comment[0]}) {first_comment[1]}"
                 else:
                     first_comment_str = f"({first_comment[0]}) " + "; ".join([f"{k}={v}" for k, v in first_comment[1].items()])
                 
                 if first_comment == last_comment:
                     inline_comment = f" # {first_comment_str}"
                 else:
-                    if isinstance(last_comment[1], str) and last_comment[1] == "NO_CHANGE":
-                        last_comment_str = f"({last_comment[0]}) NO_CHANGE"
+                    if isinstance(last_comment[1], str):
+                        last_comment_str = f"({last_comment[0]}) {last_comment[1]}"
                     else:
                         last_comment_str = f"({last_comment[0]}) " + "; ".join([f"{k}={v}" for k, v in last_comment[1].items()])
                     
@@ -65,33 +73,17 @@ def generate_commented_code(file_path, in_line_cmt):
         else:
             commented_code.append(line)
 
-    # Special handling for return statements if necessary
-    for i, line in enumerate(commented_code):
-        if 'return' in line:
-            return_line = in_line_cmt.get(lineno, [])
-            if return_line:
-                return_vars = return_line[0][1]
-                if isinstance(return_vars, str) and return_vars == "NO_CHANGE":
-                    return_comment = "NO_CHANGE"
-                else:
-                    return_comment = "; ".join([f"{k}={v}" for k, v in return_vars.items()])
-                commented_code[i] = f"{line} # __return__=({return_comment})"
-
     return "\n".join(commented_code)
 
 def execute_and_trace(file_path):
     with open(file_path, 'r') as file:
         code = compile(file.read(), file_path, 'exec')
 
-    def run_code():
-        try:
-            exec(code, {})
-        except:
-            pass
-
     tracer = ExecutionTracer()
-    tracer.start_tracing(run_code)
+    tracer.start_tracing(code)
     execution_trace = tracer.get_execution_trace()
+    error = tracer.error
+    asserterror = tracer.asserterror
 
     intermediate_value = []
     source = linecache.getlines(file_path)
@@ -101,14 +93,30 @@ def execute_and_trace(file_path):
     for i in range(len(code_line)):
         if code_line[i].find('if') != -1 or code_line[i].find('elif') != -1 or code_line[i].find('else') != -1:
             condition_line.append(i+1)
+        if code_line[i].find('assert') != -1:
+            assert_line = i+1
     for i in range(len(execution_trace)-1):
         if execution_trace[i][0] not in condition_line:
+            if i > 0:
+                if execution_trace[i][0] == execution_trace[i-1][0]:
+                    if execution_trace[i][1] == execution_trace[i-1][1]:
+                        continue
             intermediate_value.append([execution_trace[i][0], execution_trace[i+1][1]])
-        
+
+    if error != None:
+        if asserterror:
+            intermediate_value.append([assert_line , f'__exception__ = AssertionError()'])
+        else:
+            intermediate_value[-1][1] = f'__exception__ = {error}'
+    
     symbol_table = {}
     values = []
     for i in range(len(intermediate_value)):
-        if i == len(intermediate_value)-1:
+        if i == len(intermediate_value)-1 and error ==None:
+            values.append([intermediate_value[i][0], intermediate_value[i][1]])
+        elif i == len(intermediate_value)-2 and error != None:
+            values.append([intermediate_value[i][0], intermediate_value[i][1]])
+        elif i == len(intermediate_value)-1 and error != None:
             values.append([intermediate_value[i][0], intermediate_value[i][1]])
         else:
             temp_dict = {}
