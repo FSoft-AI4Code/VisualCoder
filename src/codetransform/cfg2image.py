@@ -4,7 +4,7 @@ import graphviz as gv
 from typing import Dict, List, Tuple, Set, Optional, Type
 import re
 import sys
-import trace_execution
+import src.codetransform.trace_execution as trace_execution
 import os
 import io
 import linecache
@@ -848,6 +848,14 @@ class PyParser:
             last_lineno = end_line
         self.script = out
 
+def code2cfg(source: str, execution=False) -> str:
+    parser = PyParser(source)
+    parser.removeCommentsAndDocstrings()
+    parser.formatCode()
+    cfg = CFGVisitor().build("ControlFlowGraph", ast.parse(parser.script))  
+    cfg.clean()
+    
+    
 if __name__ == '__main__':
     filename = sys.argv[1]
     if "get_execution" in sys.argv:
@@ -868,7 +876,7 @@ if __name__ == '__main__':
     parser = PyParser(source)
     parser.removeCommentsAndDocstrings()
     parser.formatCode()
-    cfg = CFGVisitor().build(filename, ast.parse(parser.script))  
+    cfg = CFGVisitor().build("ControlFlowGraph", ast.parse(parser.script))  
     cfg.clean()
     if get_execution:
         cfg.show_execution()

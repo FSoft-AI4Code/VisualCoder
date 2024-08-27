@@ -1,5 +1,5 @@
 import sys
-import trace_execution
+import src.codetransform.trace_execution as trace_execution
 import inspect
 from io import StringIO
 from contextlib import redirect_stdout
