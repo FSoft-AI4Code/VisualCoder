@@ -84,7 +84,10 @@ def execute_and_trace(file_path):
         code = compile(file.read(), file_path, 'exec')
 
     def run_code():
-        exec(code, {})
+        try:
+            exec(code, {})
+        except:
+            pass
 
     tracer = ExecutionTracer()
     tracer.start_tracing(run_code)
