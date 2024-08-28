@@ -1,9 +1,9 @@
 from datasets import load_dataset
-from eval import evaluate_score_cruxeval
-from prompts import make_cot_input_prompt, make_cot_output_prompt_cruxeval
+from src.evaluations.cruxeval import evaluate_score_cruxeval
+from src.tasks.execution.prompts import make_cot_input_prompt, make_cot_output_prompt_cruxeval, make_visual_cot_output_prompt
 from typing import Dict, Optional
 
-class CruxEnv:
+class CruxEvalTask:
     def __init__(self, config):
         super().__init__()
         self.config = config
@@ -16,7 +16,11 @@ class CruxEnv:
         self.problem = None
         self.results = []
         
-        self.make_prompt_func = make_cot_output_prompt_cruxeval if config.subset == "output" else make_cot_input_prompt
+        if not config.visual_aid:
+            self.make_prompt_func = (make_cot_output_prompt_cruxeval if config.subset == "output" else make_cot_input_prompt)
+        else:
+            #TODO: Cuong please add the visual aid prompt function here
+            self.make_prompt_func = (make_visual_cot_output_prompt) if config.subset == "output" else make_cot_input_prompt
     
     @property
     def problems(self):

@@ -1,4 +1,4 @@
-from utils import check_correctness
+from src.utils.utils import check_correctness
 
 def evaluate_score_cruxeval(args):
     gs, (c, i, o), mode = args
