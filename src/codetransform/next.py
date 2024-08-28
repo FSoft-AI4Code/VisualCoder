@@ -1,10 +1,8 @@
 import sys
 import src.codetransform.trace_execution as trace_execution
-import inspect
-from io import StringIO
-from contextlib import redirect_stdout
 import copy
 import linecache
+import random
 
 class ExecutionTracer:
     def __init__(self):
@@ -79,7 +77,24 @@ def generate_commented_code(file_path, in_line_cmt):
 
     return "\n".join(commented_code)
 
-def execute_and_trace(file_path):
+def generate_random_string(input_string, length=64):
+    # Ensure input_string is not empty to avoid ValueError
+    if not input_string:
+        raise ValueError("Input string must not be empty.")
+    
+    # Generate a random string of the specified length
+    random_string = ''.join(random.choice(input_string) for _ in range(length))
+    return random_string
+
+def execute_and_trace(source: str):
+    # generate a random temp file name
+    file_path = generate_random_string(source, 32)
+    file_path += ".py"
+    file_path = f"/tmp/{file_path}"
+    
+    with open(file_path, 'w') as file:
+        file.write(source)
+    
     with open(file_path, 'r') as file:
         code = compile(file.read(), file_path, 'exec')
 
@@ -134,8 +149,7 @@ def execute_and_trace(file_path):
         
     commented_code = generate_commented_code(file_path, in_line_cmt)
 
-    with open(f'traced_{file_path}', 'w') as traced_file:
-        traced_file.write(commented_code)
+    return commented_code
 
 
 if __name__ == '__main__':
