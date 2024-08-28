@@ -83,7 +83,7 @@ def generate_random_string(input_string, length=64):
         raise ValueError("Input string must not be empty.")
     
     # Generate a random string of the specified length
-    random_string = ''.join(random.choice(input_string) for _ in range(length))
+    random_string = ''.join(random.choice("abcdefghijklmnopqrstuvwxyz") for _ in range(length))
     return random_string
 
 def execute_and_trace(source: str):
