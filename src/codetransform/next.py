@@ -1,6 +1,6 @@
 import sys
 # import src.codetransform.trace_execution as trace_execution
-import trace_execution
+import src.codetransform.trace_execution as trace_execution
 import copy
 import linecache
 import random
