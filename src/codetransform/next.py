@@ -1,8 +1,10 @@
 import sys
-import src.codetransform.trace_execution as trace_execution
+# import src.codetransform.trace_execution as trace_execution
+import trace_execution
 import copy
 import linecache
 import random
+from types import FunctionType
 
 class ExecutionTracer:
     def __init__(self):
@@ -13,7 +15,7 @@ class ExecutionTracer:
         self.asserterror = False
 
     def trace_execution(self, frame, event, arg):
-        if '__builtins__' not in frame.f_locals and ".0" not in frame.f_locals and len(frame.f_locals) > 0:
+        if '__builtins__' not in frame.f_locals and ".0" not in frame.f_locals and len(frame.f_locals) > 0 and 'module' not in frame.f_locals:
             code = frame.f_code
             lineno = frame.f_lineno
             locals_snapshot = copy.deepcopy(frame.f_locals) 
@@ -104,12 +106,17 @@ def execute_and_trace(source: str):
     source = linecache.getlines(file_path)
     code_line = [element.lstrip().replace('\n', '') for element in source]
     condition_line = []
-
+    def_line = 0
     for i in range(len(code_line)):
-        if code_line[i].find('if') != -1 or code_line[i].find('elif') != -1 or code_line[i].find('else') != -1:
+        if code_line[i].startswith('if') or code_line[i].startswith('elif') or code_line[i].startswith('else'):
             condition_line.append(i+1)
-        if code_line[i].find('assert') != -1:
+        if code_line[i].startswith('assert'):
             assert_line = i+1
+        if code_line[i].startswith('def'):
+            if def_line == 0:
+                def_line = i+1
+            else:
+                condition_line.append(i+1)
     for i in range(len(execution_trace)-1):
         if execution_trace[i][0] not in condition_line:
             if i > 0:
@@ -122,7 +129,10 @@ def execute_and_trace(source: str):
         if asserterror:
             intermediate_value.append([assert_line , f'__exception__ = AssertionError()'])
         else:
-            intermediate_value[-1][1] = f'__exception__ = {error}'
+            if len(intermediate_value)>0:
+                intermediate_value[-1][1] = f'__exception__ = {error}'
+            else:
+                intermediate_value.append([def_line,f'__exception__ = {error}'])
     
     symbol_table = {}
     values = []
@@ -136,6 +146,10 @@ def execute_and_trace(source: str):
         else:
             temp_dict = {}
             for var in intermediate_value[i][1]:
+                if var.startswith("__class__"):
+                    continue
+                if isinstance(intermediate_value[i][1][var], FunctionType):
+                    continue
                 if var not in symbol_table:
                     symbol_table[var] = intermediate_value[i][1][var]
                     temp_dict[var] = intermediate_value[i][1][var]
@@ -161,8 +175,30 @@ def execute_and_trace(source: str):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python tracer.py <python_file_path>")
-    else:
-        execute_and_trace(sys.argv[1])
-        print(f"Traced file saved as traced_{sys.argv[1]}")
+    source ="""from collections import defaultdict
+
+def find_covered_people(N, M, parents, insurances):
+    # Create family tree
+    children = defaultdict(list)
+    for i in range(2, N + 1):
+        children[parents[i - 2]].append(i)
+    
+    # Initialize coverage set
+    covered = set()
+    
+    def cover_descendants(person, generations):
+        if generations < 0 or person in covered:
+            return
+        covered.add(person)
+        for child in children[person]:
+            cover_descendants(child, generations - 1)
+    
+    # Process insurances
+    for x, y in insurances:
+        cover_descendants(x, y)
+    
+    return len(covered)
+
+assert find_covered_people(7, 3, [1, 2, 1, 3, 3, 3], [(1, 1), (1, 2), (4, 3)]) == 4"""
+    print(execute_and_trace(source))
+    
