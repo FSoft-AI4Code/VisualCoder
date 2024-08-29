@@ -1,2 +1,4 @@
 google-generativeai
 autopep8
+pyext
+datasets

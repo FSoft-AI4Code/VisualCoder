@@ -1,17 +1,11 @@
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-
-# This code is adapted from OpenAI's release
-# https://github.com/openai/human-eval/blob/master/human_eval/execution.py
-
-import contextlib
 import faulthandler
-import io
 import multiprocessing
-import os
-import platform
+import contextlib
 import signal
 import tempfile
-
+import io
+import os
+import platform
 
 def check_correctness(check_program, timeout=3):
     """
