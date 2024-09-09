@@ -93,6 +93,8 @@ class CFG:
         self.error: bool = False
         self.path: List[int] = []
         self.func_name: List[str] = []
+        self.matching: Dict[int, int] = {}
+        self.revert: Dict[int, int] = {}
 
     def clean(self):
         des_edges = {}
@@ -107,6 +109,7 @@ class CFG:
             if self.blocks[node].stmts_to_code():
                 current = node
                 for next in des_edges[node]:
+                    condition = self.edges[(node, next)]
                     next_node = next
                     while self.blocks[next_node].stmts_to_code() == '':
                         if next_node not in blank_node:
@@ -116,7 +119,7 @@ class CFG:
                             break
                         next_node = des_edges[current][0]
                     if (node, next_node) not in self.edges:
-                        self.edges[(node, next_node)] = None
+                        self.edges[(node, next_node)] = condition
                         if next_node != node and next_node not in self.blocks[node].next:
                             self.blocks[node].next.append(next_node)
             else:
@@ -145,8 +148,7 @@ class CFG:
     def track_execution(self, filename, func_name = None):
         nodes = []
         blocks = []
-        matching = {}
-        revert = {}
+        self.revert = {}
         all_nodes = self.get_all_nodes()
         for i in all_nodes:
             if all_nodes[i].stmts_to_code():
@@ -162,15 +164,15 @@ class CFG:
                 if all_nodes[i].condition:
                     st = 'T '+ st
                 nodes.append(st)
-                matching[i] = len(nodes)
-                revert[len(nodes)] = i
+                self.matching[i] = len(nodes)
+                self.revert[len(nodes)] = i
         all_edges = self.get_all_edges()
         edges = {}
         for edge in all_edges:
-            if matching[edge[0]] not in edges:
-                edges[matching[edge[0]]] = [matching[edge[1]]]
+            if self.matching[edge[0]] not in edges:
+                edges[self.matching[edge[0]]] = [self.matching[edge[1]]]
             else:
-                edges[matching[edge[0]]].append(matching[edge[1]])
+                edges[self.matching[edge[0]]].append(self.matching[edge[1]])
         t = trace_execution.Trace(ignoredirs=[sys.base_prefix, sys.base_exec_prefix,],
 
         
@@ -206,7 +208,6 @@ class CFG:
             if no_spaces.startswith("elif"):
                 no_spaces = no_spaces[2:]
             execution_path.append(no_spaces)
-        
         check_True_condition = []
         for i in range(len(execution_path)-1):
             if execution_path[i].startswith('if') or execution_path[i].startswith('while') or execution_path[i].startswith('for'):
@@ -215,8 +216,8 @@ class CFG:
 
         current_node = 1
 
-        true_execution = [revert[current_node]]
-        path = [revert[current_node]]
+        true_execution = [self.revert[current_node]]
+        path = [self.revert[current_node]]
         exit_flag = False
         for s in range(len(execution_path)):
             node = execution_path[s]
@@ -228,17 +229,17 @@ class CFG:
             if len(edges[current_node]) == 2:
                 if blocks[edges[current_node][0]-1] == blocks[edges[current_node][1]-1] == node:
                     if (s-1) in check_True_condition:
-                        if all_nodes[revert[edges[current_node][0]]].condition:
+                        if all_nodes[self.revert[edges[current_node][0]]].condition:
                             current_node = edges[current_node][0]
                         else:
                             current_node = edges[current_node][1]
                     else:
-                        if all_nodes[revert[edges[current_node][0]]].condition:
+                        if all_nodes[self.revert[edges[current_node][0]]].condition:
                             current_node = edges[current_node][1]
                         else:
                             current_node = edges[current_node][0]
-                    if revert[current_node] not in path:
-                        path.append(revert[current_node])
+                    if self.revert[current_node] not in path:
+                        path.append(self.revert[current_node])
                     continue
             for next_node in edges[current_node]:
                 c += 1
@@ -252,11 +253,11 @@ class CFG:
                 if c == len(edges[current_node]):
                     exit_flag = True
                     raise Exception(f"Error: Cannot find the execution path in CFG in file {filename}")
-            true_execution.append(revert[current_node])
+            true_execution.append(self.revert[current_node])
             if exit_flag:
                 break
-            if revert[current_node] not in path:    
-                path.append(revert[current_node])
+            if self.revert[current_node] not in path:    
+                path.append(self.revert[current_node])
         node_max = 0
         for i in all_nodes:
             if i > node_max:
@@ -269,8 +270,7 @@ class CFG:
     def track_execution_new(self, source, func_name = None):
         nodes = []
         blocks = []
-        matching = {}
-        revert = {}
+        self.matching = {}
         all_nodes = self.get_all_nodes()
         for i in all_nodes:
             if all_nodes[i].stmts_to_code():
@@ -286,8 +286,15 @@ class CFG:
                 if all_nodes[i].condition:
                     st = 'T '+ st
                 nodes.append(st)
-                matching[i] = len(nodes)
-                revert[len(nodes)] = i
+                self.matching[i] = len(nodes)
+                self.revert[len(nodes)] = i
+        all_edges = self.get_all_edges()
+        edges = {}
+        for edge in all_edges:
+            if self.matching[edge[0]] not in edges:
+                edges[self.matching[edge[0]]] = [self.matching[edge[1]]]
+            else:
+                edges[self.matching[edge[0]]].append(self.matching[edge[1]])
         # Create the trace object (adjust the arguments as needed)
         t = trace_execution.Trace(
             ignoredirs=[sys.base_prefix, sys.base_exec_prefix],
@@ -332,25 +339,45 @@ class CFG:
                 closest_match = difflib.get_close_matches(node, blocks, n=1, cutoff=0.1)
                 if closest_match:
                     index = blocks.index(closest_match[0])
-                    self.path.append(revert[index+1])
+                    self.path.append(index+1)
                 else:
                     raise Exception(f"Error: Cannot find the execution path in CFG")
             else:
-                # get index of node in blocks
-                index = blocks.index(node)
-                self.path.append(revert[index+1])
+                # get number of element in blocks that match with node 
+                all_index = [i for i, x in enumerate(blocks) if x == node]
+                if len(all_index) == 1:
+                    self.path.append(all_index[0]+1)
+                else:
+                    # check the element in index that in edges[self.path[-1]]
+                    if self.path[-1] not in edges:
+                        self.path.append(all_index[0]+1)
+                    else:
+                        find = False
+                        for index in all_index:
+                            if index in edges[self.path[-1]]:
+                                self.path.append(index+1)
+                                find = True
+                                break
+                        if not find:
+                            # get the index closest to self.path[-1]
+                            closest_index = min(all_index, key=lambda x: abs(x - self.path[-1]))
+                            self.path.append(closest_index+1)
+                            
         return error
 
-    def _traverse(self, block: BasicBlock, get_coverage: bool = False, visited: Set[int] = set(), calls: bool = True, error: bool = False, path: list[int] = list()) -> None:
+    def _traverse(self, block: BasicBlock, get_coverage: bool = False, visited: Set[int] = set(), calls: bool = True, error: bool = False, path: list[int] = list(), matching: Dict[int, int] = {}) -> None:
         # Add block.bid to the node label
         if block.bid not in visited:
             visited.add(block.bid)
-            # st = f'{block.bid} \n'
-            st = block.stmts_to_code()
+            if matching != {}:
+                st = f'{matching[block.bid]} \n'
+                st += block.stmts_to_code()
+            else:
+                st = block.stmts_to_code()
             # Check if the block is in the path and highlight it
             node_attributes = {'shape': 'ellipse'}
             if get_coverage:
-                if block.bid in path:
+                if matching[block.bid] in path:
                     if error:
                         node_attributes['color'] = 'red'
                     else:
@@ -360,44 +387,44 @@ class CFG:
             self.graph.node(str(block.bid), label=st, _attributes=node_attributes)
             # block.next contain some duplicate values, only keep the unique values
             for next_bid in set(block.next):
-                self._traverse(self.blocks[next_bid], get_coverage, visited, calls=calls, error=error, path=path)
+                self._traverse(self.blocks[next_bid], get_coverage, visited, calls=calls, error=error, path=path, matching=matching)
                 self.graph.edge(str(block.bid), str(next_bid), label=self.edges[(block.bid, next_bid)] if type(self.edges[(block.bid, next_bid)]) == str else '')
         return visited
 
-    def _show(self, get_coverage: bool = False, fmt: str = 'png', calls: bool = True, node: int = 0, error: bool = False, path: list[int] = list()) -> gv.dot.Digraph:
+    def _show(self, get_coverage: bool = False, fmt: str = 'png', calls: bool = True, node: int = 0, error: bool = False, path: list[int] = list(), matching: Dict[int, int] = {}) -> gv.dot.Digraph:
         if self.name.endswith('.py'):
             self.graph = gv.Digraph(name='cluster_'+self.name, format=fmt )
         else:
             self.graph = gv.Digraph(name='cluster_'+self.name, format=fmt, graph_attr={'label': self.name})
         if node != 0:
             visited = set()
-            visited = self._traverse(self.start, get_coverage, visited, calls=calls, error=error, path=[node])
+            visited = self._traverse(self.start, get_coverage, visited, calls=calls, error=error, path=[node], matching=matching)
         else:
-            self._traverse(self.start, get_coverage = get_coverage, calls=calls, path=path)
+            self._traverse(self.start, get_coverage = get_coverage, calls=calls, path=path, matching=matching)
         for k, v in self.func_calls.items():
             v.clean()
-            self.graph.subgraph(v._show(get_coverage, fmt, calls, node, error, path))
+            self.graph.subgraph(v._show(get_coverage, fmt, calls, node, error, path, matching))
         return self.graph
 
 
     def show(self, source: str, get_coverage: bool = False, get_execution: bool = False ,filepath: str = './cfg', fmt: str = 'png', calls: bool = True) -> None:
         if get_coverage or get_execution:
             self.error = self.track_execution_new(source=source)
-        self._show(get_coverage, fmt, calls, path=self.path)
+        self._show(get_coverage, fmt, calls, path=self.path, matching=self.matching)
         self.graph.render(filepath, cleanup=True)
 
     def show_execution(self, source: str, filepath: str = './execution', fmt: str = 'png', calls: bool = True) -> None:
         self.error = self.track_execution_new(source=source)
-        # self._show(True, fmt, calls)
         count = 1
+        filepath = filepath + "_execution"
         if not os.path.exists(filepath):
             os.makedirs(filepath)
         for node in self.path:
             self.graph = None
             if count == len(self.path):
-                self._show(True, fmt, calls, node,  error=self.error)
+                self._show(True, fmt, calls, node,  error=self.error, matching=self.matching)
             else:
-                self._show(True, fmt, calls, node)
+                self._show(True, fmt, calls, node, matching=self.matching)
             save_path = f'{filepath}/execution_{count}'
             self.graph.render(save_path, cleanup=True)
             count += 1
@@ -440,7 +467,7 @@ class CFGVisitor(ast.NodeVisitor):
         self.cfg.start = self.curr_block
 
         self.visit(tree)
-        self.remove_empty_blocks(self.cfg.start)
+        # self.remove_empty_blocks(self.cfg.start)
         return self.cfg
 
     def new_block(self) -> BasicBlock:
@@ -582,14 +609,15 @@ class CFGVisitor(ast.NodeVisitor):
 
     # assert type check
     def visit_Assert(self, node):
-        self.add_stmt(self.curr_block, node)
-        # If the assertion fails, the current flow ends, so the fail block is a
-        # final block of the CFG.
-        # self.cfg.finalblocks.append(self.add_edge(self.curr_block.bid, self.new_block().bid, self.invert(node.test)))
-        # If the assertion is True, continue the flow of the program.
-        # success block
-        self.curr_block = self.add_edge(self.curr_block.bid, self.new_block().bid)
-        self.generic_visit(node)
+        # self.add_stmt(self.curr_block, node)
+        # # If the assertion fails, the current flow ends, so the fail block is a
+        # # final block of the CFG.
+        # # self.cfg.finalblocks.append(self.add_edge(self.curr_block.bid, self.new_block().bid, self.invert(node.test)))
+        # # If the assertion is True, continue the flow of the program.
+        # # success block
+        # self.curr_block = self.add_edge(self.curr_block.bid, self.new_block().bid)
+        # self.generic_visit(node)
+        pass
 
     # TODO: change all those registers to stacks!
     def visit_Assign(self, node): 
@@ -960,9 +988,9 @@ def generate_random_string(input_string, length=64):
     return random_string
 
 def code2cfgimage(source: str, get_execution=False, get_coverage = False):
-    file_path = generate_random_string(source, 32)
-    file_path = f"/tmp/{file_path}"
-    # file_path = f"./output_image/cfg"
+    # file_path = generate_random_string(source, 32)
+    # file_path = f"/tmp/{file_path}"
+    file_path = f"./output_image/buggy_cfg"
     
     parser = PyParser(source)
     parser.removeCommentsAndDocstrings()
@@ -973,9 +1001,9 @@ def code2cfgimage(source: str, get_execution=False, get_coverage = False):
     return file_path + ".png", cfg.path
 
 def code2cfgvid(source: str):
-    file_path = generate_random_string(source, 32)
-    file_path = f"/tmp/{file_path}"
-    # file_path = f"./output_image/cfg"
+    # file_path = generate_random_string(source, 32)
+    # file_path = f"/tmp/{file_path}"
+    file_path = f"./output_image/cfg"
     parser = PyParser(source)
     parser.removeCommentsAndDocstrings()
     parser.formatCode()
