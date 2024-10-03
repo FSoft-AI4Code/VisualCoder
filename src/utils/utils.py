@@ -1062,16 +1062,19 @@ def aggregate_vit_attention(attn, select_layer=-2, all_prev_layers=True):
         for i, layer in enumerate(attn):
             if i > len(attn) + select_layer:
                 break
-            layer_attns = layer.squeeze(0)
-            attns_per_head = layer_attns.mean(dim=0)
-            vec = attns_per_head[1:, 1:].cpu() # the first token is <CLS>
+            if i > 10:
+                break
+            # layer_attns = layer.squeeze(0)
+            # import ipdb; ipdb.set_trace()
+            # attns_per_head = layer_attns.mean(dim=0)
+            vec = layer[1:, :].cpu() # the first token is <CLS>
             avged.append(vec / vec.sum(-1, keepdim=True))
         return torch.stack(avged).mean(dim=0)
     else:
         layer = attn[select_layer]
         layer_attns = layer.squeeze(0)
-        attns_per_head = layer_attns.mean(dim=0)
-        vec = attns_per_head[1:, 1:].cpu()
+        # attns_per_head = layer_attns.mean(dim=0)
+        vec = layer_attns[1:, :].cpu()
         return vec / vec.sum(-1, keepdim=True)
 
 

@@ -146,6 +146,7 @@ class InternVisionEmbeddings(nn.Module):
         )
 
         self.num_patches = (self.image_size // self.patch_size) ** 2
+        self.num_patches_per_side = self.image_size // self.patch_size
         self.num_positions = self.num_patches + 1
 
         self.position_embedding = nn.Parameter(torch.randn(1, self.num_positions, self.embed_dim))
@@ -223,7 +224,7 @@ class InternAttention(nn.Module):
         x = (attn @ v).transpose(1, 2).reshape(B, N, C)
         x = self.proj(x)
         x = self.proj_drop(x)
-        return x
+        return (x, attn) if self.config.output_attentions else (x,)
 
     def _flash_attn(self, x, key_padding_mask=None, need_weights=False):
         qkv = self.qkv(x)
@@ -287,11 +288,14 @@ class InternVisionEncoderLayer(nn.Module):
         Args:
             hidden_states (`Tuple[torch.FloatTensor, Optional[torch.FloatTensor]]`): input to the layer of shape `(batch, seq_len, embed_dim)`
         """
-        hidden_states = hidden_states + self.drop_path1(self.attn(self.norm1(hidden_states).to(hidden_states.dtype)) * self.ls1)
+        outputs = self.attn(self.norm1(hidden_states).to(hidden_states.dtype))
+        x = outputs[0]
+        attn = outputs[1] if len(outputs) > 1 else None
+        hidden_states = hidden_states + self.drop_path1(x* self.ls1)
 
         hidden_states = hidden_states + self.drop_path2(self.mlp(self.norm2(hidden_states).to(hidden_states.dtype)) * self.ls2)
 
-        return hidden_states
+        return hidden_states, attn
 
 
 class InternVisionEncoder(nn.Module):
@@ -335,28 +339,30 @@ class InternVisionEncoder(nn.Module):
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
         encoder_states = () if output_hidden_states else None
+        attentions = () 
         hidden_states = inputs_embeds
 
         for idx, encoder_layer in enumerate(self.layers):
             if output_hidden_states:
                 encoder_states = encoder_states + (hidden_states,)
             if self.gradient_checkpointing and self.training:
-                layer_outputs = torch.utils.checkpoint.checkpoint(
+                layer_outputs, attn = torch.utils.checkpoint.checkpoint(
                     encoder_layer,
                     hidden_states)
             else:
-                layer_outputs = encoder_layer(
+                layer_outputs, attn = encoder_layer(
                     hidden_states,
                 )
             hidden_states = layer_outputs
 
         if output_hidden_states:
             encoder_states = encoder_states + (hidden_states,)
-
+        attentions = attentions + (attn,)
+        
         if not return_dict:
             return tuple(v for v in [hidden_states, encoder_states] if v is not None)
         return BaseModelOutput(
-            last_hidden_state=hidden_states, hidden_states=encoder_states
+            last_hidden_state=hidden_states, hidden_states=encoder_states, attentions=attentions
         )
 
 
@@ -372,6 +378,7 @@ class InternVisionModel(PreTrainedModel):
 
         self.embeddings = InternVisionEmbeddings(config)
         self.encoder = InternVisionEncoder(config)
+        self.image_attentions = []
 
     def resize_pos_embeddings(self, old_size, new_size, patch_size):
         pos_emb = self.embeddings.position_embedding
@@ -416,6 +423,7 @@ class InternVisionModel(PreTrainedModel):
             return_dict=return_dict,
         )
         last_hidden_state = encoder_outputs.last_hidden_state
+        self.image_attentions = encoder_outputs.attentions
         pooled_output = last_hidden_state[:, 0, :]
 
         if not return_dict:

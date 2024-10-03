@@ -71,7 +71,7 @@ class InternVisionConfig(PretrainedConfig):
             intermediate_size=12800,
             qk_normalization=True,
             num_hidden_layers=48,
-            use_flash_attn=True,
+            use_flash_attn=False,
             hidden_act='gelu',
             norm_type='rms_norm',
             layer_norm_eps=1e-6,
@@ -90,6 +90,7 @@ class InternVisionConfig(PretrainedConfig):
         self.drop_path_rate = drop_path_rate
         self.num_hidden_layers = num_hidden_layers
         self.num_attention_heads = num_attention_heads
+        self.output_attentions = True
         self.num_channels = num_channels
         self.patch_size = patch_size
         self.image_size = image_size
