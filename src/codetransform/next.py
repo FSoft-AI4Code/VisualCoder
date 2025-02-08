@@ -1,42 +1,36 @@
-from __future__ import annotations
 import sys
 import src.codetransform.trace_execution as trace_execution
 import copy
-from types import FunctionType
+import linecache
+import random
 
 class ExecutionTracer:
     def __init__(self):
         self.tracer = trace_execution.Trace(count=False, trace=True, countfuncs=False, countcallers=False)
         self.execution_trace = []
         self.idx = 0
-        self.error = None
-        self.asserterror = False
 
     def trace_execution(self, frame, event, arg):
-        if '__builtins__' not in frame.f_locals and ".0" not in frame.f_locals and len(frame.f_locals) > 0 and 'module' not in frame.f_locals:
+        if '__builtins__' not in frame.f_locals and ".0" not in frame.f_locals and len(frame.f_locals) > 0 and 'code' not in frame.f_locals:
             code = frame.f_code
             lineno = frame.f_lineno
             locals_snapshot = copy.deepcopy(frame.f_locals) 
             self.execution_trace.append([lineno, locals_snapshot])
         return self.trace_execution
 
-    def start_tracing(self, code):
+    def start_tracing(self, func):
         sys.settrace(self.trace_execution)
-        try:
-            exec(code, {})
-        except AssertionError as e:
-            self.error = e
-            self.asserterror = True
-        except Exception as e:
-            self.error = e
+        func()
         sys.settrace(None)
 
     def get_execution_trace(self):
         return self.execution_trace
 
-def generate_commented_code(source, in_line_cmt):
-    code_lines = source.split('\n')
-    code_lines = [element.rstrip() for element in code_lines]
+def generate_commented_code(file_path, in_line_cmt):
+
+    with open(file_path, 'r') as file:
+        code_lines = file.readlines()
+        code_lines = [element.rstrip() for element in code_lines]
     commented_code = []
 
     for lineno, line in enumerate(code_lines, 1):
@@ -48,16 +42,16 @@ def generate_commented_code(source, in_line_cmt):
                 last_comment = comments[-1]
 
                 # Handle NO_CHANGE scenario
-                if isinstance(first_comment[1], str):
-                    first_comment_str = f"({first_comment[0]}) {first_comment[1]}"
+                if isinstance(first_comment[1], str) and first_comment[1] == "NO_CHANGE":
+                    first_comment_str = f"({first_comment[0]}) NO_CHANGE"
                 else:
                     first_comment_str = f"({first_comment[0]}) " + "; ".join([f"{k}={v}" for k, v in first_comment[1].items()])
                 
                 if first_comment == last_comment:
                     inline_comment = f" # {first_comment_str}"
                 else:
-                    if isinstance(last_comment[1], str):
-                        last_comment_str = f"({last_comment[0]}) {last_comment[1]}"
+                    if isinstance(last_comment[1], str) and last_comment[1] == "NO_CHANGE":
+                        last_comment_str = f"({last_comment[0]}) NO_CHANGE"
                     else:
                         last_comment_str = f"({last_comment[0]}) " + "; ".join([f"{k}={v}" for k, v in last_comment[1].items()])
                     
@@ -69,93 +63,71 @@ def generate_commented_code(source, in_line_cmt):
         else:
             commented_code.append(line)
 
+    # Special handling for return statements if necessary
+    for i, line in enumerate(commented_code):
+        if 'return' in line:
+            return_line = in_line_cmt.get(lineno, [])
+            if return_line:
+                return_vars = return_line[0][1]
+                if isinstance(return_vars, str) and return_vars == "NO_CHANGE":
+                    return_comment = "NO_CHANGE"
+                else:
+                    return_comment = "; ".join([f"{k}={v}" for k, v in return_vars.items()])
+                commented_code[i] = f"{line} # __return__=({return_comment})"
+
     return "\n".join(commented_code)
 
+def generate_random_string(input_string, length=64):
+    # Ensure input_string is not empty to avoid ValueError
+    if not input_string:
+        raise ValueError("Input string must not be empty.")
+    
+    # Generate a random string of the specified length
+    random_string = ''.join(random.choice("abcdefghijklmnopqrstuvwxyz") for _ in range(length))
+    return random_string
+
 def execute_and_trace(source: str):
-    code = compile(source, "next.py", 'exec')
+    # generate a random temp file name
+    file_path = generate_random_string(source, 32)
+    file_path += ".py"
+    file_path = f"/tmp/{file_path}"
+    
+    with open(file_path, 'w') as file:
+        file.write(source)
+    
+    with open(file_path, 'r') as file:
+        code = compile(file.read(), file_path, 'exec')
+
+    def run_code():
+        try:
+            exec(code, {})
+        except:
+            pass
+
     tracer = ExecutionTracer()
-    tracer.start_tracing(code)
+    tracer.start_tracing(run_code)
     execution_trace = tracer.get_execution_trace()
-    error = tracer.error
-    asserterror = tracer.asserterror
 
     intermediate_value = []
-    code_line = [element.lstrip() for element in source.split("\n")]
+    source = linecache.getlines(file_path)
+    code_line = [element.lstrip().replace('\n', '') for element in source]
     condition_line = []
-    def_line = 0
+
     for i in range(len(code_line)):
-        if code_line[i].startswith('if') or code_line[i].startswith('elif') or code_line[i].startswith('else'):
+        if code_line[i].find('if') != -1 or code_line[i].find('elif') != -1 or code_line[i].find('else') != -1:
             condition_line.append(i+1)
-        if code_line[i].startswith('assert'):
-            assert_line = i+1
-        if code_line[i].startswith('def'):
-            if def_line == 0:
-                def_line = i+1
     for i in range(len(execution_trace)-1):
         if execution_trace[i][0] not in condition_line:
-            if i > 0:
-                if execution_trace[i][0] == execution_trace[i-1][0]:
-                    if execution_trace[i][1] == execution_trace[i-1][1]:
-                        continue
             intermediate_value.append([execution_trace[i][0], execution_trace[i+1][1]])
-
-    if error != None:
-        if asserterror:
-            intermediate_value.append([assert_line , f'__exception__ = AssertionError()'])
-        else:
-            if len(intermediate_value)>0:
-                intermediate_value[-1][1] = f'__exception__ = {error}'
-            else:
-                intermediate_value.append([def_line,f'__exception__ = {error}'])
-    
+        
     symbol_table = {}
     values = []
     for i in range(len(intermediate_value)):
-        if i == len(intermediate_value)-1 and error ==None:
-            temp_dict = {}
-            for var in intermediate_value[i][1]:
-                if var.startswith("__class__"):
-                    continue
-                if var.startswith("self"):
-                    continue
-                if var.startswith("__module__"):
-                    continue
-                if var.startswith("__qualname__"):
-                    continue
-                if isinstance(intermediate_value[i][1][var], FunctionType):
-                    continue
-                temp_dict[var] = intermediate_value[i][1][var]
-            values.append([intermediate_value[i][0], temp_dict])
-        elif i == len(intermediate_value)-2 and error != None:
-            temp_dict = {}
-            for var in intermediate_value[i][1]:
-                if var.startswith("__class__"):
-                    continue
-                if var.startswith("self"):
-                    continue
-                if var.startswith("__module__"):
-                    continue
-                if var.startswith("__qualname__"):
-                    continue
-                if isinstance(intermediate_value[i][1][var], FunctionType):
-                    continue
-                temp_dict[var] = intermediate_value[i][1][var]
-            values.append([intermediate_value[i][0], temp_dict])
-        elif i == len(intermediate_value)-1 and error != None:
+        if i == len(intermediate_value)-1:
             values.append([intermediate_value[i][0], intermediate_value[i][1]])
         else:
             temp_dict = {}
             for var in intermediate_value[i][1]:
-                if var.startswith("__class__"):
-                    continue
-                if var.startswith("self"):
-                    continue
-                if var.startswith("__module__"):
-                    continue
-                if var.startswith("__qualname__"):
-                    continue
-                if isinstance(intermediate_value[i][1][var], FunctionType):
-                    continue
                 if var not in symbol_table:
                     symbol_table[var] = intermediate_value[i][1][var]
                     temp_dict[var] = intermediate_value[i][1][var]
@@ -175,35 +147,14 @@ def execute_and_trace(source: str):
         else:
             in_line_cmt[values[i][0]].append([i, values[i][1]])
         
-    commented_code = generate_commented_code(source, in_line_cmt)
+    commented_code = generate_commented_code(file_path, in_line_cmt)
 
     return commented_code
 
 
 if __name__ == '__main__':
-    source ="""from collections import defaultdict
-
-def find_covered_people(N, M, parents, insurances):
-    # Create family tree
-    children = defaultdict(list)
-    for i in range(2, N + 1):
-        children[parents[i - 2]].append(i)
-    
-    # Initialize coverage set
-    covered = set()
-    
-    def cover_descendants(person, generations):
-        if generations < 0 or person in covered:
-            return
-        covered.add(person)
-        for child in children[person]:
-            cover_descendants(child, generations - 1)
-    
-    # Process insurances
-    for x, y in insurances:
-        cover_descendants(x, y)
-    
-    return len(covered)
-
-assert find_covered_people(7, 3, [1, 2, 1, 3, 3, 3], [(1, 1), (1, 2), (4, 3)]) == 4"""
-    print(execute_and_trace(source))
+    if len(sys.argv) != 2:
+        print("Usage: python tracer.py <python_file_path>")
+    else:
+        execute_and_trace(sys.argv[1])
+        print(f"Traced file saved as traced_{sys.argv[1]}")

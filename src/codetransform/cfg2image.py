@@ -35,6 +35,17 @@ class BlockId(metaclass=SingletonMeta):
         self.counter += 1
         return self.counter
 
+# def a function to check the parenthesis balance
+def check_parenthesis(code: str) -> bool:
+    stack = []
+    for char in code:
+        if char in '([{':
+            stack.append(char)
+        elif char in ')]}':
+            if not stack:
+                return False
+            stack.pop()
+    return not stack
 
 class BasicBlock:
 
@@ -66,10 +77,20 @@ class BasicBlock:
             self.next.remove(next_bid)
 
     def stmts_to_code(self) -> str:
+        code_line = ''
         code = ''
         for stmt in self.stmts:
             line = astor.to_source(stmt)
-            code += line.split('\n')[0]
+            code_line = line.split('\n')
+            content = code_line[0]
+            if not check_parenthesis(content):
+                for i in range(1,len(code_line)):
+                    content += "\n"+code_line[i]
+                    if check_parenthesis(content):
+                        break
+                code += content
+            else:
+                code += content
         return code
 
     def calls_to_code(self) -> str:
@@ -144,6 +165,13 @@ class CFG:
         for k, v in self.func_calls.items():
             edges.update(v.get_all_edges())
         return edges
+    
+    def get_all_function_name(self):
+        functions = {}
+        for k, v in self.func_calls.items():
+            functions[k] = v.start.bid
+            functions.update(v.get_all_function_name())
+        return functions
     
     def track_execution(self, filename, func_name = None):
         nodes = []
@@ -277,6 +305,8 @@ class CFG:
                 st = all_nodes[i].stmts_to_code()
                 st_no_space = re.sub(r"\s+", "", st)
                 st_no_space = st_no_space.replace('"', "'")
+                # remove ( and ) in st_no_space
+                st_no_space = st_no_space.replace('(', '').replace(')', '')
                 blocks.append(st_no_space)
                 # if start with if or while, delete these keywords
                 if st.startswith('if'):
@@ -288,6 +318,7 @@ class CFG:
                 nodes.append(st)
                 self.matching[i] = len(nodes)
                 self.revert[len(nodes)] = i
+
         all_edges = self.get_all_edges()
         edges = {}
         for edge in all_edges:
@@ -295,6 +326,16 @@ class CFG:
                 edges[self.matching[edge[0]]] = [self.matching[edge[1]]]
             else:
                 edges[self.matching[edge[0]]].append(self.matching[edge[1]])
+
+        all_functions = self.get_all_function_name()
+        for name in all_functions:
+            # if element in blocks contain name, then add all_functions[name] to edges
+            for i in range(len(blocks)):
+                if name in blocks[i]:
+                    if i+1 not in edges:
+                        edges[i+1] = [self.matching[all_functions[name]]]
+                    else:
+                        edges[i+1].append(self.matching[all_functions[name]])
         # Create the trace object (adjust the arguments as needed)
         t = trace_execution.Trace(
             ignoredirs=[sys.base_prefix, sys.base_exec_prefix],
@@ -331,45 +372,51 @@ class CFG:
                 no_spaces = no_spaces[2:]
             if no_spaces.startswith("class"):
                 continue
+            # remove ( and ) in no_spaces
+            no_spaces = no_spaces.replace('(', '').replace(')', '')
             execution_path.append(no_spaces)
         for node in execution_path:
             if node == "break" or node == "continue":
                 continue
             if node not in blocks:
-                closest_match = difflib.get_close_matches(node, blocks, n=1, cutoff=0.1)
-                if closest_match:
-                    index = blocks.index(closest_match[0])
-                    self.path.append(index+1)
-                else:
-                    raise Exception(f"Error: Cannot find the execution path in CFG")
+                find = False
+                for i in range(len(blocks)):
+                    if node in blocks[i]:
+                        self.path.append(i+1)
+                        find = True
+                        break
+                if not find:
+                    closest_match = difflib.get_close_matches(node, blocks, n=1, cutoff=0.1)
+                    if closest_match:
+                        index = blocks.index(closest_match[0])
+                        self.path.append(index+1)
             else:
                 # get number of element in blocks that match with node 
-                all_index = [i for i, x in enumerate(blocks) if x == node]
+                all_index = [i+1 for i, x in enumerate(blocks) if x == node]
                 if len(all_index) == 1:
-                    self.path.append(all_index[0]+1)
+                    self.path.append(all_index[0])
                 else:
-                    # check the element in index that in edges[self.path[-1]]
                     if self.path[-1] not in edges:
-                        self.path.append(all_index[0]+1)
+                        self.path.append(all_index[0])
                     else:
                         find = False
                         for index in all_index:
                             if index in edges[self.path[-1]]:
-                                self.path.append(index+1)
+                                self.path.append(index)
                                 find = True
                                 break
                         if not find:
                             # get the index closest to self.path[-1]
                             closest_index = min(all_index, key=lambda x: abs(x - self.path[-1]))
-                            self.path.append(closest_index+1)
+                            self.path.append(closest_index)
                             
         return error
 
-    def _traverse(self, block: BasicBlock, get_coverage: bool = False, visited: Set[int] = set(), calls: bool = True, error: bool = False, path: list[int] = list(), matching: Dict[int, int] = {}) -> None:
+    def _traverse(self, block: BasicBlock, get_coverage: bool = False, get_execution: bool = False, visited: Set[int] = set(), calls: bool = True, error: bool = False, path: list[int] = list(), matching: Dict[int, int] = {}) -> None:
         # Add block.bid to the node label
         if block.bid not in visited:
             visited.add(block.bid)
-            if matching != {}:
+            if get_execution:
                 st = f'{matching[block.bid]} \n'
                 st += block.stmts_to_code()
             else:
@@ -387,30 +434,30 @@ class CFG:
             self.graph.node(str(block.bid), label=st, _attributes=node_attributes)
             # block.next contain some duplicate values, only keep the unique values
             for next_bid in set(block.next):
-                self._traverse(self.blocks[next_bid], get_coverage, visited, calls=calls, error=error, path=path, matching=matching)
+                self._traverse(self.blocks[next_bid], get_coverage, get_execution, visited, calls=calls, error=error, path=path, matching=matching)
                 self.graph.edge(str(block.bid), str(next_bid), label=self.edges[(block.bid, next_bid)] if type(self.edges[(block.bid, next_bid)]) == str else '')
         return visited
 
-    def _show(self, get_coverage: bool = False, fmt: str = 'png', calls: bool = True, node: int = 0, error: bool = False, path: list[int] = list(), matching: Dict[int, int] = {}) -> gv.dot.Digraph:
+    def _show(self, get_coverage: bool = False, get_execution: bool = False, fmt: str = 'png', calls: bool = True, node: int = 0, error: bool = False, path: list[int] = list(), matching: Dict[int, int] = {}) -> gv.dot.Digraph:
         if self.name.endswith('.py'):
             self.graph = gv.Digraph(name='cluster_'+self.name, format=fmt )
         else:
             self.graph = gv.Digraph(name='cluster_'+self.name, format=fmt, graph_attr={'label': self.name})
         if node != 0:
             visited = set()
-            visited = self._traverse(self.start, get_coverage, visited, calls=calls, error=error, path=[node], matching=matching)
+            visited = self._traverse(self.start, get_coverage, get_execution, visited, calls=calls, error=error, path=[node], matching=matching)
         else:
-            self._traverse(self.start, get_coverage = get_coverage, calls=calls, path=path, matching=matching)
+            self._traverse(self.start, get_coverage = get_coverage, get_execution = get_execution, calls=calls, path=path, matching=matching)
         for k, v in self.func_calls.items():
             v.clean()
-            self.graph.subgraph(v._show(get_coverage, fmt, calls, node, error, path, matching))
+            self.graph.subgraph(v._show(get_coverage, get_execution, fmt, calls, node, error, path, matching))
         return self.graph
 
 
     def show(self, source: str, get_coverage: bool = False, get_execution: bool = False ,filepath: str = './cfg', fmt: str = 'png', calls: bool = True) -> None:
         if get_coverage or get_execution:
             self.error = self.track_execution_new(source=source)
-        self._show(get_coverage, fmt, calls, path=self.path, matching=self.matching)
+        self._show(get_coverage, get_execution, fmt, calls, path=self.path, matching=self.matching)
         self.graph.render(filepath, cleanup=True)
 
     def show_execution(self, source: str, filepath: str = './execution', fmt: str = 'png', calls: bool = True) -> None:
@@ -422,9 +469,9 @@ class CFG:
         for node in self.path:
             self.graph = None
             if count == len(self.path):
-                self._show(True, fmt, calls, node,  error=self.error, matching=self.matching)
+                self._show(True, False, fmt, calls, node,  error=self.error, matching=self.matching)
             else:
-                self._show(True, fmt, calls, node, matching=self.matching)
+                self._show(True, False, fmt, calls, node, matching=self.matching)
             save_path = f'{filepath}/execution_{count}'
             self.graph.render(save_path, cleanup=True)
             count += 1
@@ -621,23 +668,24 @@ class CFGVisitor(ast.NodeVisitor):
 
     # TODO: change all those registers to stacks!
     def visit_Assign(self, node): 
-        if type(node.value) in [ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp, ast.Lambda] and len(node.targets) == 1 and type(node.targets[0]) == ast.Name: # is this entire statement necessary?
-            if type(node.value) == ast.ListComp:
-                self.add_stmt(self.curr_block, ast.Assign(targets=[ast.Name(id=node.targets[0].id, ctx=ast.Store())], value=ast.List(elts=[], ctx=ast.Load())))
-                self.listCompReg = (node.targets[0].id, node.value)
-            elif type(node.value) == ast.SetComp:
-                self.add_stmt(self.curr_block, ast.Assign(targets=[ast.Name(id=node.targets[0].id, ctx=ast.Store())], value=ast.Call(func=ast.Name(id='set', ctx=ast.Load()), args=[], keywords=[])))
-                self.setCompReg = (node.targets[0].id, node.value)
-            elif type(node.value) == ast.DictComp:
-                self.add_stmt(self.curr_block, ast.Assign(targets=[ast.Name(id=node.targets[0].id, ctx=ast.Store())], value=ast.Dict(keys=[], values=[])))
-                self.dictCompReg = (node.targets[0].id, node.value)
-            elif type(node.value) == ast.GeneratorExp:
-                self.add_stmt(self.curr_block, ast.Assign(targets=[ast.Name(id=node.targets[0].id, ctx=ast.Store())], value=ast.Call(func=ast.Name(id='__' + node.targets[0].id + 'Generator__', ctx=ast.Load()), args=[], keywords=[])))
-                self.genExpReg = (node.targets[0].id, node.value)
-            else:
-                self.lambdaReg = (node.targets[0].id, node.value)
-        else:
-            self.add_stmt(self.curr_block, node)
+        #edit
+        # if type(node.value) in [ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp, ast.Lambda] and len(node.targets) == 1 and type(node.targets[0]) == ast.Name: # is this entire statement necessary?
+        #     if type(node.value) == ast.ListComp:
+        #         self.add_stmt(self.curr_block, ast.Assign(targets=[ast.Name(id=node.targets[0].id, ctx=ast.Store())], value=ast.List(elts=[], ctx=ast.Load())))
+        #         self.listCompReg = (node.targets[0].id, node.value)
+        #     elif type(node.value) == ast.SetComp:
+        #         self.add_stmt(self.curr_block, ast.Assign(targets=[ast.Name(id=node.targets[0].id, ctx=ast.Store())], value=ast.Call(func=ast.Name(id='set', ctx=ast.Load()), args=[], keywords=[])))
+        #         self.setCompReg = (node.targets[0].id, node.value)
+        #     elif type(node.value) == ast.DictComp:
+        #         self.add_stmt(self.curr_block, ast.Assign(targets=[ast.Name(id=node.targets[0].id, ctx=ast.Store())], value=ast.Dict(keys=[], values=[])))
+        #         self.dictCompReg = (node.targets[0].id, node.value)
+        #     elif type(node.value) == ast.GeneratorExp:
+        #         self.add_stmt(self.curr_block, ast.Assign(targets=[ast.Name(id=node.targets[0].id, ctx=ast.Store())], value=ast.Call(func=ast.Name(id='__' + node.targets[0].id + 'Generator__', ctx=ast.Load()), args=[], keywords=[])))
+        #         self.genExpReg = (node.targets[0].id, node.value)
+        #     else:
+        #         self.lambdaReg = (node.targets[0].id, node.value)
+        # else:
+        self.add_stmt(self.curr_block, node)
         self.generic_visit(node)
 
     def visit_Await(self, node):
@@ -678,14 +726,15 @@ class CFGVisitor(ast.NodeVisitor):
 
     # ignore the case when using set or dict comprehension or generator expression but the result is not assigned to a variable
     def visit_Expr(self, node):
-        if type(node.value) == ast.ListComp and type(node.value.elt) == ast.Call:
-            self.listCompReg = (None, node.value)
-        elif type(node.value) == ast.Lambda:
-            self.lambdaReg = ('Anonymous Function', node.value)
-        # elif type(node.value) == ast.Call and type(node.value.func) == ast.Lambda:
-        #     self.lambdaReg = ('Anonymous Function', node.value.func)
-        else:
-            self.add_stmt(self.curr_block, node)
+        #edit
+        # if type(node.value) == ast.ListComp and type(node.value.elt) == ast.Call:
+        #     self.listCompReg = (None, node.value)
+        # elif type(node.value) == ast.Lambda:
+        #     self.lambdaReg = ('Anonymous Function', node.value)
+        # # elif type(node.value) == ast.Call and type(node.value.func) == ast.Lambda:
+        # #     self.lambdaReg = ('Anonymous Function', node.value.func)
+        # else:
+        self.add_stmt(self.curr_block, node)
         self.generic_visit(node)
 
     def visit_For(self, node):
@@ -806,12 +855,13 @@ class CFGVisitor(ast.NodeVisitor):
 
     # ToDO: final blocks to be add
     def visit_Return(self, node):
-        if type(node.value) == ast.IfExp:
-            self.ifExp = True
-            self.generic_visit(node)
-            self.ifExp = False
-        else:
-            self.add_stmt(self.curr_block, node)
+        #edit
+        # if type(node.value) == ast.IfExp:
+        #     self.ifExp = True
+        #     self.generic_visit(node)
+        #     self.ifExp = False
+        # else:
+        self.add_stmt(self.curr_block, node)
         # self.cfg.finalblocks.append(self.curr_block)
         # Continue in a new block but without any jump to it -> all code after
         # the return statement will not be included in the CFG.
@@ -987,10 +1037,12 @@ def generate_random_string(input_string, length=64):
     random_string = ''.join(random.choice("abcdefghijklmnopqrstuvwxyz") for _ in range(length))
     return random_string
 
-def code2cfgimage(source: str, get_execution=False, get_coverage = False):
-    # file_path = generate_random_string(source, 32)
-    # file_path = f"/tmp/{file_path}"
-    file_path = f"./output_image/buggy_cfg"
+def code2cfgimage(source: str, get_execution=False, get_coverage = False, filename = "cfg", random_file = False):
+    if random_file:
+        file_path = generate_random_string(source, 32)
+        file_path = f"/tmp/{file_path}"
+    else:
+        file_path = "./output_image/" + filename
     
     parser = PyParser(source)
     parser.removeCommentsAndDocstrings()
@@ -1000,17 +1052,19 @@ def code2cfgimage(source: str, get_execution=False, get_coverage = False):
     cfg.show(source= source, get_coverage = get_coverage, get_execution = get_execution, filepath = file_path)
     return file_path + ".png", cfg.path
 
-def code2cfgvid(source: str):
-    # file_path = generate_random_string(source, 32)
-    # file_path = f"/tmp/{file_path}"
-    file_path = f"./output_image/cfg"
+def code2cfgvid(source: str, filename = "cfg", random_file = False):
+    if random_file:
+        file_path = generate_random_string(source, 32)
+        file_path = f"/tmp/{file_path}"
+    else:
+        file_path = "./output_image/" + filename
     parser = PyParser(source)
     parser.removeCommentsAndDocstrings()
     parser.formatCode()
     cfg = CFGVisitor().build("code.py", ast.parse(parser.script))  
     cfg.clean()
     cfg.show_execution(source = source, filepath = file_path)
-    return file_path + ".png", cfg.path
+    return file_path + "_execution.gif", cfg.path
 
 if __name__ == '__main__':
     filename = sys.argv[1]
