@@ -1,18 +1,18 @@
 <div align="center">
 
-# [NAACL'25] VISUALCODER: Guiding Large Language Models in Code Execution with Fine-grained Multimodal Chain-of-Thought Reasoning  
+# [NAACL'25] VisualCoder: Guiding Large Language Models in Code Execution with Fine-grained Multimodal Chain-of-Thought Reasoning  
 [![arXiv](https://img.shields.io/badge/arXiv-2410.23402-b31b1b.svg)](https://arxiv.org/abs/2410.23402)  
 
 </div>
 
 ## 🚀 Introduction
 
-We introduce **VISUALCODER**, a **novel framework** that enhances **code execution reasoning** by integrating **multimodal Chain-of-Thought (CoT) prompting** with **visual Control Flow Graphs (CFGs)**. While **Large Language Models (LLMs)** are highly effective at analyzing **static code**, they struggle with **dynamic execution reasoning**, leading to errors in **program behavior prediction, fault localization, and program repair**. To address these challenges, **VISUALCODER** aligns **code snippets with their corresponding CFGs**, providing LLMs with a **structured understanding of execution flows**. Unlike prior methods that rely on **text-based CFG descriptions**, **VISUALCODER** leverages **visual CFG representations** and a **Reference Mechanism** to establish a direct connection between **code structure and execution dynamics**.
+We introduce **VisualCoder**, a **novel framework** that enhances **code execution reasoning** by integrating **multimodal Chain-of-Thought (CoT) prompting** with **visual Control Flow Graphs (CFGs)**. While **Large Language Models (LLMs)** are highly effective at analyzing **static code**, they struggle with **dynamic execution reasoning**, leading to errors in **program behavior prediction, fault localization, and program repair**. To address these challenges, **VisualCoder** aligns **code snippets with their corresponding CFGs**, providing LLMs with a **structured understanding of execution flows**. Unlike prior methods that rely on **text-based CFG descriptions**, **VisualCoder** leverages **visual CFG representations** and a **Reference Mechanism** to establish a direct connection between **code structure and execution dynamics**.
 
 
 <div align="center">
   <img src="img/VisualCoder.png" width="80%">
-<p><b>Figure 1: VISUALCODER – CFG + CoT + Reference for more accurate code execution understanding.</b></p>
+<p><b>Figure 1: VisualCoder – CFG + CoT + Reference for more accurate code execution understanding.</b></p>
 </div>
 
 
@@ -24,7 +24,7 @@ We introduce **VISUALCODER**, a **novel framework** that enhances **code executi
 ✔ **Program Repair Assistance** – Helps LLMs understand execution errors and suggest fixes.  
 
 ## 📜 Paper  
-📄 **NAACL 2025**: [VISUALCODER: Guiding Large Language Models in Code Execution with Fine-grained Multimodal Chain-of-Thought Reasoning](https://arxiv.org/abs/2410.23402)  
+📄 **NAACL 2025**: [VisualCoder: Guiding Large Language Models in Code Execution with Fine-grained Multimodal Chain-of-Thought Reasoning](https://arxiv.org/abs/2410.23402)  
 
 ## ⚙️ Installation
 
