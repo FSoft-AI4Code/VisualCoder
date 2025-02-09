@@ -32,70 +32,104 @@ To set up the environment and install the necessary dependencies, run:
 
 ```sh
 ./setup.sh
+```
+
+## 🚀 **Usage**
 
 
-## **Usage**
-
-
-- **Fault Localization with Close-Source LLM**:
+- **Program Repair with Close-Source VLMs (Claude, GPT-4o)**
 
   ```bash
-  python fault_localization_close_source_LLM.py --session <session_number> --setting <setting_name> --close_model <model_type>
+  python program_repair_close_VLM.py --session <session_number> --setting <setting_name> --close_model <model_type> --claude_api_key <claude_api_key> --openai_api_key <openai_api_key> --azure_endpoint <azure_endpoint> --deployment_name <deployment_name> --version <version>
+  ```
+  #### **Configuration Options:**
+  - `<session_number>`: Numerical identifier for the session (e.g., `1`, `2`, `3`, …).
+  - `<setting_name>`: Specifies the setting. Choose from:
+    - `buggy`: Plain code without reasoning.
+    - `buggy_COT`: Plain code with **Chain-of-Thought (CoT)** prompting.
+    - `buggy_cfg_COT`: Plain code with **CFG + CoT** reasoning.
+    - `NeXT`: Plain code with execution trace from **NeXT framework**.
+    - `VisualCoder`: **VISUALCODER (Plain code + CFG + CoT + Reference)**.
+    - `Multimodal_CoT`: Two-stage **Multimodal CoT**.
+    - `Multimodal-CoT_VisualCoder`: **Multimodal CoT** combined with **VISUALCODER**.
+  - `<model_type>`: Choose the **close-source LLM**:
+    - `claude`: Uses **Anthropic's Claude** (requires API key).
+    - `gpt`: Uses **OpenAI’s GPT-4o** (requires API key).
+  - `<claude_api_key>`: API key for **Claude** (Anthropic).
+  - `<openai_api_key>`: API key for **GPT-4o** (OpenAI).
+  - `<azure_endpoint>`: Azure endpoint for OpenAI API.
+  - `<deployment_name>`: Deployment name for OpenAI API.
+  - `<version>`: Model version (e.g., `gpt-4o` for OpenAI).
+  #### Example Command
+  ```bash
+  python program_repair_close_VLM.py --session 1 --setting VisualCoder --close_model gpt \
+    --openai_api_key "your_openai_api_key" \
+    --azure_endpoint "your_azure_endpoint" \
+    --deployment_name "your_openai_deployment_name" \
+    --version gpt-4o
   ```
 
-  - `<session_number>`: Numerical identifier for the session (e.g., `1`, `2`, etc.)
-  - `<setting_name>`: One of the following: `buggy` (plain code), `buggy_CoT` (plain code +CoT), `buggy_cfg_CoT` (plain code +CFG +CoT), `NeXT` (NeXT), `VisualCoder` (VisualCoder), `Multimodal_CoT` (2-stage Multimodal_CoT), `Multimodal-CoT_VisualCoder` (Multimodal_CoT + VisualCoder)
-  - `<model_type>`: Specify either `claude` or `gpt` for the close-source model
-  - `claude_api_key`: API key for Claude
-  - `openai_api_key`: API key for OpenAI
-  - `azure_endpoint`: Azure endpoint for OpenAI
-  - `deployment_name`: Deployment name for OpenAI
-  - `version`: Version of the model
+- **Program Repair with InternVL**:
+  ```bash
+  python program_repair_InternVL.py --session <session_number> --setting <setting_name> 
+  ```
+
+
+- **Fault Localization with Close-Source VLMs**
+  ```bash
+  python fault_localization_close_VLM.py --session <session_number> --setting <setting_name> --close_model <model_type> --claude_api_key <claude_api_key> --openai_api_key <openai_api_key> --azure_endpoint <azure_endpoint> --deployment_name <deployment_name> --version <version>
+  ```
+
 
 - **Fault Localization with InternVL**:
 
   ```bash
   python fault_localization_InternVL.py --session <session_number> --setting <setting_name>
   ```
-  - `<session_number>`: Numerical identifier for the session (e.g., `1`, `2`, etc.)
-  - `<setting_name>`: One of the following: `buggy` (plain code), `buggy_CoT` (plain code +CoT), `buggy_cfg_CoT` (plain code +CFG +CoT), `NeXT` (NeXT), `VisualCoder` (VisualCoder), `Multimodal_CoT` (2-stage Multimodal_CoT), `Multimodal-CoT_VisualCoder` (Multimodal_CoT + VisualCoder)
 
-- **Program Repair with Close-Source LLM**:
-
-  ```bash
-  python program_repair_close_source_LLM.py --session <session_number> --setting <setting_name> --close_model <model_type>
-  ```
-
-- **Program Repair with InternVL**:
-
-  ```bash
-  python program_repair_InternVL.py --session <session_number> --setting <setting_name>
-  ```
+- **Input/Output Prediction:** See the Jupyter notebook:  
+  📂 **[notebooks/input_output_prediction.ipynb](notebooks/input_output_prediction.ipynb)**
 
 - **Get Attention Scores**:
 
-  This command calculates attention scores for a given session, available only for `get_attention_score.py`:
+  This command calculates attention scores for a given script, available only for `get_attention_score.py`:
 
   ```bash
   python get_attention_score.py --session <session_number> --prompt_mode <prompt_type> --setting <setting_name>
   ```
 
-  - `<prompt_type>`: Specify the prompt type (e.g., `zeroshot`)
+  - `<prompt_mode>`: Specify the prompt type (e.g., `zeroshot`, `oneshot`)
 
-### Example Command
+  #### Example Command
 
-Here’s an example for running **Get Attention Scores**:
+  Here’s an example for running **Get Attention Scores**:
 
-```bash
-python get_attention_score.py --session 1 --prompt_mode zeroshot --setting VisualCoder
+  ```bash
+  python get_attention_score.py --session 1 --prompt_mode zeroshot --setting VisualCoder
+  ```
+
+  The command can be adapted to any other script by modifying the script at line 605 in get_attention_score.py
+
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+This codebase is supported by:
+- [CFG-Generator](https://github.com/Tiankai-Jiang/CFG-Generator)
+- [trace_python](https://github.com/python/cpython/blob/3.12/Lib/trace.py)
+
+## Citation Information
+
+If you're using VisualCoder, please cite using this BibTeX:
+```bibtex
+@misc{le2024visualcoderguidinglargelanguage,
+      title={VISUALCODER: Guiding Large Language Models in Code Execution with Fine-grained Multimodal Chain-of-Thought Reasoning}, 
+      author={Cuong Chi Le and Hoang-Chau Truong-Vinh and Huy Nhat Phan and Dung Duy Le and Tien N. Nguyen and Nghi D. Q. Bui},
+      year={2024},
+      eprint={2410.23402},
+      archivePrefix={arXiv},
+      primaryClass={cs.SE},
+      url={https://arxiv.org/abs/2410.23402}, 
+}
 ```
-
-The command can be adapted to any other script by modifying the script name and options.
-
-## Configuration
-
-The configuration parameters like `session`, `setting`, and `close_model` (for close-source models) are consistent across all commands. Customize these parameters based on your task and model requirements:
-
-- **Session**: Numerical identifier for the session
-- **Setting**: One of the following: `buggy`, `cfg`, `buggy_CoT`, `buggy_cfg_CoT`, `cfg_CoT`, `VisualCoder`, `Multimodal_CoT`, `Multimodal-CoT_VisualCoder`
-- **Close Model**: Only applicable for close-source LLM scripts (`claude` or `gpt`)

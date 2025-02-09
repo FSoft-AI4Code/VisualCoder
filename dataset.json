@@ -1,0 +1,1047 @@
+[
+    {
+        "code": "n = '123456789'\nn=str(n)\nSum=0\nfor i in range(len(n)):\n    Sum=Sum+n[i]-\"0\"\nif Sum%9==0:\n    print(\"yes\")\nelse:\n    print(\"no\")",
+        "error_type": "'str' object is not callable",
+        "error_line": "Sum=Sum+n[i]-\"0\""
+    },
+    {
+        "code": "a = 5\nb = [2, 1, 5, 4, 3]\nbmax = 0\nans = 0\nfor i in range(a):\n    if i == 0:\n        bmax = a[i]\n    else:\n        if bmax < a[i]:\n            bmax = a[i]\n        elif bmax > a[i]:\n            ans += bmax - a[i]\nprint(str(ans))",
+        "error_type": "'int' object is not subscriptable",
+        "error_line": "bmax = a[i]"
+    },
+    {
+        "code": "n = '5'\nA = [2, 1, 5, 4, 3]\nans = 0 \ntemp = 0\nfor i in range(n-1):\n    if A[i]<temp:\n        ans += temp-A[i]\n    else:\n        temp = max(temp,A[i])\nprint(ans) ",
+        "error_type": "unsupported operand type(s) for -: 'str' and 'int'",
+        "error_line": "for i in range(n-1):"
+    },
+    {
+        "code": "xkd = 'RRS'\nx,k,d = int(xkd.split())\nif x >= k*d:\n    print(x-(k*d))\nelse:\n    if x <= -(k*d):\n        print(x+(k*d))\n    else:\n        if x <= 0:\n            lxl = -x\n        else:\n            lxl = x\n        if x <= 0:\n            now_x = x + (d * (int(lxl / d) + 1))\n            left_x = -now_x\n            right_x = now_x + d\n        else:\n            now_x = x - (d * (int(lxl / d) + 1))\n            left_x = -(now_x - d)\n            right_x = now_x\n        now_k = k - int(lxl / d) - 1\n        if now_x <= 0:\n            if now_k % 2 == 0:\n                print(left_x)\n            else:\n                print(right_x)\n        else:\n            if now_k % 2 == 0:\n                print(right_x)\n            else:\n                print(left_x)",
+        "error_type": "int() argument must be a string, a bytes-like object or a real number, not 'list'",
+        "error_line": "x,k,d = int(xkd.split())"
+    },
+    {
+        "code": "k = 101\nif k%2 == 0:\n   print(-1)\nelif k%5 == 0:\n  print(-1)\nelse:\n  s = 7\n  while s%k != 0:\n    s = 10*s+7\n  print(len(s))",
+        "error_type": "object of type 'int' has no len()",
+        "error_line": "print(len(s))"
+    },
+    {
+        "code": "n = 2\na = [1000000000, 1000000000]\nlimit=10**18\nif 0 in a:\n    print(0)\n    exit()\nfor i in range(a):\n  ans *= a[i]\n  if sum>limit:\n    ans = -1\n    break\nprint(ans)",
+        "error_type": "'list' object cannot be interpreted as an integer",
+        "error_line": "for i in range(a):"
+    },
+    {
+        "code": "import sys\nn = 2\na = [1000000000, 1000000000]\na.sort()\nif 0 in a:\n    print(0)\nelse:\n    cur = 1\n    for x in a:\n        cur *= a\n        if cur > 10 ** 18:\n            print(-1)\n            sys.exit()\n        print(cur)",
+        "error_type": "'>' not supported between instances of 'list' and 'int'",
+        "error_line": "if cur > 10 ** 18:"
+    },
+    {
+        "code": "N = 2\nA = ['1000000000', '1000000000']\nA = sorted(A)\nresult = 1\nmax = 10**18\nfor a in A:\n    result *= a\n    if result > max:\n        print(-1)\n        break\n    else:\n        print(result)",
+        "error_type": "'>' not supported between instances of 'str' and 'int'",
+        "error_line": "if result > max:"
+    },
+    {
+        "code": "count = '2'\nlist = ['1000000000', '1000000000']\ni = 0\nnum = int(list[i])\ni += 1\nwhile i>= count:\n  num = num * int(list[i])\n  if num > 10**18:\n    print(-1)\n    break\n  i += 1",
+        "error_type": "'>=' not supported between instances of 'int' and 'str'",
+        "error_line": "while i>= count:"
+    },
+    {
+        "code": "n = '16'\nn %= 10\nhon = [2,4,5,7,9]\npon = [0,1,6,8]\nbon = [3]\nif n in hon:\n    print(\"hon\")\nelif n in pon:\n    print(\"pon\")\nelse:\n    print(\"bon\")",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "n %= 10"
+    },
+    {
+        "code": "N = 16\nif N[-1] == 2 or 4 or 5 or 7 or 9:\n    print(\"hon\")\nif N[-1] == 0 or 1 or 6 or 8:\n    print(\"pon\")\nif N[-1] == 3:\n    print(\"bon\")",
+        "error_type": "'int' object is not subscriptable",
+        "error_line": "if N[-1] == 2 or 4 or 5 or 7 or 9:"
+    },
+    {
+        "code": "N = 16\nif N[-1] == 2 or 4 or 5 or 7 or 9:\n    print(\"hon\")\nelif N[-1] == 0 or 1 or 6 or 8:\n    print(\"pon\")\nelif N[-1] == 3:\n    print(\"bon\")",
+        "error_type": "'int' object is not subscriptable",
+        "error_line": "if N[-1] == 2 or 4 or 5 or 7 or 9:"
+    },
+    {
+        "code": "N = ['1', '6']\nn=reversed(N)\nif n[0]==\"2\" or n[0]==\"4\" or n[0]==\"5\" or n[0]==\"7\" or n[0]==\"9\":\n    print(\"hon\")\nif n[0]==\"0\" or n[0]==\"1\" or n[0]==\"6\" or n[0]==\"8\":\n    print(\"pon\")\nif n[0]==\"3\":\n    print(\"bon\")",
+        "error_type": "'list_reverseiterator' object is not subscriptable",
+        "error_line": "if n[0]==\"2\" or n[0]==\"4\" or n[0]==\"5\" or n[0]==\"7\" or n[0]==\"9\":"
+    },
+    {
+        "code": "m = 0\nm = '16'\nm = m % 10\nif(m == 2,4,5,7,9):\n    print(\"hon\") \nelif(m == 0,1,6,8):\n    print(\"pon\") \nelse:\n    print(\"bon\")",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "m = m % 10"
+    },
+    {
+        "code": "n = '16'\nl=[2,4,5,7,9]\nl2=[0,1,6,8]\nl3=[3]\nif (n%10) in l:\n  print('hon')\nelif (n%10) in l2:\n  print('pon')\nelse:\n  print('bon')",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "if (n%10) in l:"
+    },
+    {
+        "code": "k = 7\ns = 'nikoandsolstice'\nslist = list(s)\nif len(slist) > k:\n  l = ''\n  for i in range(k):\n    k += slist[i]\n  print('...' + l)\nelse:\n  print(s)",
+        "error_type": "'list' object is not callable",
+        "error_line": "k += slist[i]"
+    },
+    {
+        "code": "S = 7\nK = 'nikoandsolstice'\nif len(S) < K:\n    print(S)\nelse:\n    print(S[:K]+'...')",
+        "error_type": "object of type 'int' has no len()",
+        "error_line": "if len(S) < K:"
+    },
+    {
+        "code": "k = '7'\nw = 'nikoandsolstice'\nl = len(w)\nif l <= k:\n    print(w)\nelse:\n      print(w[:k])",
+        "error_type": "'<=' not supported between instances of 'int' and 'str'",
+        "error_line": "if l <= k:"
+    },
+    {
+        "code": "K = '7'\nS = 'nikoandsolstice'\nlen_S=len(S)\nif K<=len_S:\n  print(S)\nelse:\n  print(S[K:], \"...\")",
+        "error_type": "'<=' not supported between instances of 'str' and 'int'",
+        "error_line": "if K<=len_S:"
+    },
+    {
+        "code": "x = 33\na = 0\nb = 0\nfor a_ in range(3):\n    _ = a_**5 - x\n    b_ = _**0.2\n    if a_**5 - b_**5 ==x:\n        a = a_\n        b = b_**5\nprint(a, int(b))",
+        "error_type": "int() argument must be a string, a bytes-like object or a real number, not 'complex'",
+        "error_line": "print(a, int(b))"
+    },
+    {
+        "code": "import sys\nn = 5\na = [6, 7, 9, 10, 31]\nfor i in a:\n  if a % 2 == 0 and (a % 3 != 0 and a % 5 != 0):\n    print(\"DENIED\")\n    sys.exit()\nprint(\"APPROVED\")    ",
+        "error_type": "unsupported operand type(s) for %: 'list' and 'int'",
+        "error_line": "if a % 2 == 0 and (a % 3 != 0 and a % 5 != 0):"
+    },
+    {
+        "code": "n = 5\na = [2, 6, 1, 4, 5]\nif(len(set(a)==n)):\n    print('YES')\nelse:\n    print('NO')",
+        "error_type": "object of type 'bool' has no len()",
+        "error_line": "if(len(set(a)==n)):"
+    },
+    {
+        "code": "N = '5'\nA = ['2', '6', '1', '4', '5']\nA.sort()\nfor i in range(N-1):\n  if A[i]==A[i+1]:\n    print('NO')\n  if i==N-2:\n    print('YES')",
+        "error_type": "unsupported operand type(s) for -: 'str' and 'int'",
+        "error_line": "for i in range(N-1):"
+    },
+    {
+        "code": "h = '2'\ncnt = 0\nwhile h > 0:\n  h = h // 2\n  cnt = cnt + 1\nprint(pow(2, cnt) - 1)",
+        "error_type": "'>' not supported between instances of 'str' and 'int'",
+        "error_line": "while h > 0:"
+    },
+    {
+        "code": "H = '2'\ncount=0\nm=1\nwhile H:\n  if H==1:\n    count+=m\n  else:\n    m*=2\n    H=int(H/2)\nprint(count)",
+        "error_type": "unsupported operand type(s) for /: 'str' and 'int'",
+        "error_line": "H=int(H/2)"
+    },
+    {
+        "code": "n = 10\ns = 'ZABCDBABCQ'\ncount=0\nfor i in range(len(n)-2):\n  if s[i]==\"A\" and s[i+1]==\"B\" and s[i+2]==\"C\":\n    count+=1\nprint(count)",
+        "error_type": "object of type 'int' has no len()",
+        "error_line": "for i in range(len(n)-2):"
+    },
+    {
+        "code": "N = '10'\nS = 'ZABCDBABCQ'\nans = 0\nfor i in range(N - 2):\n    if S[i:i+3] == 'ABC':\n       ans += 1\nprint(ans)",
+        "error_type": "unsupported operand type(s) for -: 'str' and 'int'",
+        "error_line": "for i in range(N - 2):"
+    },
+    {
+        "code": "import itertools\nn = 3\np = (1, 3, 2)\nq = (3, 1, 2)\nlists = list(itertools.permutations(list(range(1, n+1)), n))\nprint(abs(lists.index(p) - lists.index()))",
+        "error_type": "'list' object is not callable",
+        "error_line": "print(abs(lists.index(p) - lists.index()))"
+    },
+    {
+        "code": "X = 615\nDP = [0]*100001\nDP[100] = 1\nDP[101] = 1\nDP[102] = 1\nDP[103] = 1\nDP[104] = 1\nDP[105] = 1\nfor i in range(106, 100001):\n    if any(DP[i-100], DP[i-101], DP[i-102], DP[i-103], DP[i-104], DP[i-105]):\n        DP[i] = 1\nprint(DP[W])",
+        "error_type": "any() takes exactly one argument (6 given)",
+        "error_line": "if any(DP[i-100], DP[i-101], DP[i-102], DP[i-103], DP[i-104], DP[i-105]):"
+    },
+    {
+        "code": "input_number = 2\ninput_str = 'ABCXYZ'\nabc_list = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\nabc_list = abc_list + abc_list\nfor i in len(input_str):\n    output_str += abc_list[abc_list.index(input_str[i]) + input_number]",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for i in len(input_str):"
+    },
+    {
+        "code": "N = 2\nS = 'ABCXYZ'\nans = \"\"\nfor s in S:\n  ans += chr((ord(S) + N - 65)%26 + 65)\nprint(ans)",
+        "error_type": "ord() expected a character, but string of length 6 found",
+        "error_line": "ans += chr((ord(S) + N - 65)%26 + 65)"
+    },
+    {
+        "code": "a = 6\nb = ['a', 'b', 'c', 'a', 'b', 'c']\ncount=0\nif(a%2==1):\n  print('No')\nelse:\n  for i in range(a/2):\n    if(b[i]==b[i+a/2]):\n      count+=1\n  if(count==a/2):\n    print('Yes')\n  else:\n    print('No')",
+        "error_type": "'float' object cannot be interpreted as an integer",
+        "error_line": "for i in range(a/2):"
+    },
+    {
+        "code": "N = 6\nS = 'abcabc'\nif N % 2 != 0:\n    print(\"No\")\nif S[0:N/2] * 2 == S:\n    print(\"Yes\")\nelse:\n    print(\"No\")",
+        "error_type": "slice indices must be integers or None or have an __index__ method",
+        "error_line": "if S[0:N/2] * 2 == S:"
+    },
+    {
+        "code": "n = 6\ns = 'abcabc'\nn /= 2\nif s[:n] == s[n:]:\n  print(\"Yes\")\nelse:\n  print(\"No\")",
+        "error_type": "slice indices must be integers or None or have an __index__ method",
+        "error_line": "if s[:n] == s[n:]:"
+    },
+    {
+        "code": "n = 6\ns = 'abcabc'\nif n % 2 == 1:\n  print(\"No\")\nelse:\n  d = n/2\n  if s[:d] == s[d:]:\n    print(\"Yes\")\n  else:\n    print(\"No\")",
+        "error_type": "slice indices must be integers or None or have an __index__ method",
+        "error_line": "if s[:d] == s[d:]:"
+    },
+    {
+        "code": "import sys\nn = 6\ns = 'abcabc'\nif n == 1:\n  print(\"No\")\n  sys.exit()\nn = n / 2\nif s[:n]  == s[n:]:\n    print(\"Yes\")\nelse:\n    print (\"No\")",
+        "error_type": "slice indices must be integers or None or have an __index__ method",
+        "error_line": "if s[:n]  == s[n:]:"
+    },
+    {
+        "code": "N = 6\nS = 'abcabc'\nif (N%2!=0):\n    print('No')\nelse:\n    a1=S[:N/2]\n    a2=S[N/2:]\n    if (a1==a2):\n        print('Yes')",
+        "error_type": "slice indices must be integers or None or have an __index__ method",
+        "error_line": "a1=S[:N/2]"
+    },
+    {
+        "code": "import sys\nn = 10\nans = 10**12\nfor k in range(1,(n+1)**0.5):\n    if n%k == 0 :\n        m = n//k + k - 2\n        if ans > m:\n            ans = m\n        else:\n            print(ans)\n            sys.exit()\nprint(ans)",
+        "error_type": "'float' object cannot be interpreted as an integer",
+        "error_line": "for k in range(1,(n+1)**0.5):"
+    },
+    {
+        "code": "import numpy as np\nn = 10\nm=np.floor(np.sqrt(n))\nl=[]\nfor i in range(1,m+1,1):\n    if n%i==0:\n        a=i+(n/i)\n        l.append(a)\nc=int(min(l))\nprint(c-2)",
+        "error_type": "'numpy.float64' object cannot be interpreted as an integer",
+        "error_line": "for i in range(1,m+1,1):"
+    },
+    {
+        "code": "n = '4'\nns = n % 2\nif n == 1:\n    print(1)\nelif ns == 0:\n    print(0.5)\nelse:\n    print(((n//2)+1)/n)",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "ns = n % 2"
+    },
+    {
+        "code": "s = 'RUDLUDR'\nfor i in range(s):\n  if s[i] % 2 == 0 and s[i] == 'R':\n    s = False\n    break\n  elif s[i] % 2 == 1 and s[i] == 'L':\n    s = False\n    break\nif s:\n  print('Yes')\nelse:\n  print('No')",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(s):"
+    },
+    {
+        "code": "n = '3'\nA = '3 1 2'\nB = '2 5 4'\nC = '3 6'\nAs=map(int,A.split(' '))\nBs=map(int,B.split(' '))\nCs=map(int,C.split(' '))\ntotal=0\nfor i in range(0,n):\n    if As[i]-As[i-1]==1 and i!=0:\n        total=total+Cs[As[i]]\n    else:\n        total=total+Bs[As[i]]\nprint(total)",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(0,n):"
+    },
+    {
+        "code": "N = '3'\nB = [2, 5]\nA = []\nfor i in range(N):\n  if i == 0:\n    A.append(B[0])\n  elif i == N-1:\n    A.append(B[N-2])\n  else:\n    A.append(min(B[i], B[i-1]))\nprint(sum(A))",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(N):"
+    },
+    {
+        "code": "N = 5\nH = None\nmax = 0\ncnt = 0\nfor i in range(N):\n  if H[i] <= H[i+1]:\n    cnt += 1\n  elif cnt > max:\n    max = cnt\nprint(max)",
+        "error_type": "'NoneType' object is not subscriptable",
+        "error_line": "if H[i] <= H[i+1]:"
+    },
+    {
+        "code": "N = 11\ncnt = 0\nfor i in range(N):\n  if len(i)%2 == 1:\n    cnt += 0\nprint(cnt)",
+        "error_type": "object of type 'int' has no len()",
+        "error_line": "if len(i)%2 == 1:"
+    },
+    {
+        "code": "n = 11\nre=0\nfor i in range(1,n):\n  if len(str(i)%2==1):\n    re+=1\nprint(re)",
+        "error_type": "'str' object is not callable",
+        "error_line": "if len(str(i)%2==1):"
+    },
+    {
+        "code": "n = 11\ncnt=0\nfor i in range(1,n+1):\n  if len(i)%2==1:\n    cnt+=1\nprint(cnt)",
+        "error_type": "object of type 'int' has no len()",
+        "error_line": "if len(i)%2==1:"
+    },
+    {
+        "code": "n = 5\nH = [1, 2, 1, 1, 3]\nfor i in range(n):\n    if i!=0:\n        H=H[:-1]\n    if max(H)-H(-1)>1:\n        print(\"No\")\n        exit(0)\nprint(\"Yes\")",
+        "error_type": "'int' object is not callable",
+        "error_line": "if max(H)-H(-1)>1:"
+    },
+    {
+        "code": "n = '5'\nh = [1, 2, 1, 1, 3]\nmax = 0\ni = 0\ny = 1\nfor i in range(n):\n    if h[i] > max:\n        max = h[i]\n    elif h[i] < max-1:\n        y = 0\nif y==1:\n    print(\"Yes\")\nelse:\n    print(\"No\")",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(n):"
+    },
+    {
+        "code": "n = 2\nmonster = [3, 5, 2]\nbrave = [4, 5]\nans = 0\nfor i in range(n):\n  if i == 0:\n    kill = min(monster[0],brave[0])\n    ans += kill \n    brave -= kill\n  else:\n    kill = min(monster[i],brave[i])\n    ans += kill\n    brave[i] -= kill\n    kill = min(monster[i+1],brave[i])\n    ans += kill\n    monster -= kill\nprint(ans)",
+        "error_type": "'str' object is not callable",
+        "error_line": "brave -= kill"
+    },
+    {
+        "code": "from collections import defaultdict as dedict\ncounter = dedict(int)\na = 'ASSA'\nfor i in list(a):\n  counter[i] += 1\nif ( len(counter) == 2) and (  counter [counter.keys()[0]] == 2):\n  print (\"Yes\")\nelse:\n  print('No')",
+        "error_type": "'list' object is not callable",
+        "error_line": "if ( len(counter) == 2) and (  counter [counter.keys()[0]] == 2):"
+    },
+    {
+        "code": "n = '6'\nl = [9, 1, 4, 4, 6, 7]\nans=0\nfor i in range(n-2):\n    a=l[i:i+3]\n    b=a[1]\n    c=sorted(a)\n    if b==c[1]:\n        ans+=1\nprint(ans)",
+        "error_type": "unsupported operand type(s) for -: 'str' and 'int'",
+        "error_line": "for i in range(n-2):"
+    },
+    {
+        "code": "n = 3776\nflag = 0\nfor i in range(3):\n  if(n[i] == n[i+1]):\n    flag = 1\n  if(flag == 1):\n    print(\"Bad\")\n    break\nif(flag == 0):\n  print(\"Good\")",
+        "error_type": "'int' object is not subscriptable",
+        "error_line": "if(n[i] == n[i+1]):"
+    },
+    {
+        "code": "import collections\nS = ['3', '7', '7', '6']\nc = collections.Counter(S)\nif max(c.values) >= 2:\n  print(\"Bad\")\nelse:\n  print(\"Good\")",
+        "error_type": "'int' object is not callable",
+        "error_line": "if max(c.values) >= 2:"
+    },
+    {
+        "code": "lst = ['1', '9', '0', '5']\nlst1 = []\nlst1.append(lst[0]+lst[1])\nlst1.append(lst[2]+lst[3])\nif (int(lst1[0]) >=13 and int(lst1[1]) >=13) or (int(lst1[0]) >=13 and lst1[1] ==\"00\") or (lst1[0] ==\"00\" and lst1[1] >=13):\n  print(\"NA\")\nelif (0<int(lst1[0])<=12 and 0<int(lst1[1])<=12):\n      print(\"AMBIGUOUS\")\nelif 0<lst1[0] <=12:\n      print(\"MMYY\")\nelif 0<lst1[1]<=12:\n      print(\"YYMM\")",
+        "error_type": "'<' not supported between instances of 'int' and 'str'",
+        "error_line": "elif 0<lst1[0] <=12:"
+    },
+    {
+        "code": "from math import gcd\nn = 3\na = [7, 6, 8]\nb=[]\nfor i in range(n):\n  b+=gcd(a[i],a[i-1])\nb.sort()\nprint(b[2])",
+        "error_type": "'int' object is not iterable",
+        "error_line": "b+=gcd(a[i],a[i-1])"
+    },
+    {
+        "code": "n = 5\ns = 'error'\nk = 2\nc = s[k-1]\ni = s.find(c)\ns2 = \"*\"*n\ns2[i] = c\nprint(s2)",
+        "error_type": "'str' object does not support item assignment",
+        "error_line": "s2[i] = c"
+    },
+    {
+        "code": "n = 5\ns = 'error'\nk = 2\nc = s[k-1]\ni = s.find(c)\ns2 = \"*\"*n\nfor n in i:\n  s2[n] = c\nprint(s2)",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for n in i:"
+    },
+    {
+        "code": "import numpy as np\na = 29\nb = 20\nc = 7\nd = 35\ne = 120\nA = list(str(a))\nB = list(str(b))\nC = list(str(c))\nD = list(str(d))\nE = list(str(e))\nk = np.argmin([A[-1], B[-1], C[-1], D[-1], E[-1]])\nsum = 0\nif A[-1] == 0:\n  sum += a\nelse:\n  sum += a + (10 - int(A[-1]))\nif B[-1] == 0:\n  sum += b\nelse:\n  sum += b + (10 - int(B[-1]))\nif C[-1] == 0:\n  sum += c\nelse:\n  sum += c + (10 - int(C[-1]))\nif D[-1] == 0:\n  sum += d\nelse:\n  sum += d + (10 - int(D[-1]))\nif E[-1] == 0:\n  sum += e\nelse:\n  sum += e + (10 - int(E[-1]))\nsum -= 10 - [A[-1], B[-1], C[-1], D[-1], E[-1]][k]\nprint(sum)",
+        "error_type": "'str' object is not callable",
+        "error_line": "sum -= 10 - [A[-1], B[-1], C[-1], D[-1], E[-1]][k]"
+    },
+    {
+        "code": "s = 'ATCODER'\nans=0\ncur=0\nACGT=set(\"A\",\"C\",\"G\",\"T\")\nfor ss in s:\n  if ss in ACGT:\n    cur+=1\n  else:\n    ans=max(cur,ans)\n    cur=0\nprint(max(ans,cur))",
+        "error_type": "set expected at most 1 argument, got 4",
+        "error_line": "ACGT=set(\"A\",\"C\",\"G\",\"T\")"
+    },
+    {
+        "code": "S = 'ATCODER'\nmax = 0\ncount = 0\nfor x in S :\n    if x in \"ATGC\" :\n        count += 1\n    else :\n        max = max(max, count)\n        count = 0\nmax = max(max, count)\nprint(max)",
+        "error_type": "'int' object is not callable",
+        "error_line": "max = max(max, count)"
+    },
+    {
+        "code": "S = '0011'\nS=S.replace(\"10\",\"3\")\nS=S.replace(\"01\",\"3\")\nres=0\nres+=S.count(3)\nprint(S.replace(\"3\",\"\"))",
+        "error_type": "must be str, not int",
+        "error_line": "res+=S.count(3)"
+    },
+    {
+        "code": "import math\nn = 4\na = [2, 10, 8, 40]\ng = a.sort()[n - 1]\nfor i in range(1, n):\n    g = math.gcd(g, a[i])\nprint(g)",
+        "error_type": "'NoneType' object is not subscriptable",
+        "error_line": "g = a.sort()[n - 1]"
+    },
+    {
+        "code": "N = 4\nh = [10, 30, 40, 20]\nDP = [0, abs(h[0]-h[1])]\nfor i in range(N-2):\n  DP += min((DP[-2] + abs(h[i]-h[i+2])),(DP[-1] + abs(h[i+2]-h[i+1])))\nprint(DP[-1])",
+        "error_type": "'str' object is not callable",
+        "error_line": "DP += min((DP[-2] + abs(h[i]-h[i+2])),(DP[-1] + abs(h[i+2]-h[i+1])))"
+    },
+    {
+        "code": "from collections import Counter\nn = 4\nv = [3, 1, 3, 2]\na=Counter(v[::2]).most_common() \nb=Counter(v[1::2]).most_common()\nif len(a)==1:\n    a.append([0,0])\nif len(b)==1:\n    b.append([0,0])\nif a[0,0]==b[0,0]:\n    print(min(n-a[1,1]-b[0,1],n-a[0,1]-b[1,1]))\nelse:\n    print(n-a[0,1]-b[0,1])",
+        "error_type": "list indices must be integers or slices, not tuple",
+        "error_line": "if a[0,0]==b[0,0]:"
+    },
+    {
+        "code": "S = ['1', '2', '1', '4']\nK = 4\nfor i in range(len(K)):\n    if S[i] != 1:\n        print(S[i])\n        exit()\nprint(1)",
+        "error_type": "object of type 'int' has no len()",
+        "error_line": "for i in range(len(K)):"
+    },
+    {
+        "code": "S = 1214\nK = 4\nif S[0]!=\"1\":\n  print(S[0])\nelse:\n  print(S[1])",
+        "error_type": "'int' object is not subscriptable",
+        "error_line": "if S[0]!=\"1\":"
+    },
+    {
+        "code": "str = 'AtCoder'\nflag=True\nif str[0]!='A':\n    flag=False\n    str[0]='a'\ncnt=0\nfor i in range(2,len(str)-2):\n    if str[i]=='C':\n        cnt+=1\n        if cnt==1:\n            str[i]='c'\nif cnt!=1:\n    flag=False\nif str.islower():\n    flag=False\nif flag==True:\n    print(\"AC\")\nelse:\n    print(\"WA\")",
+        "error_type": "'str' object does not support item assignment",
+        "error_line": "str[i]='c'"
+    },
+    {
+        "code": "n = 5\nL=[2,1]\nfor i in range(n):\n  l=L[i]+[i+1]\n  L.append(l)\nprint(L)",
+        "error_type": "unsupported operand type(s) for +: 'int' and 'list'",
+        "error_line": "l=L[i]+[i+1]"
+    },
+    {
+        "code": "N = 7\na = [3, 1, 4, 1, 5, 9, 2]\nl = [0]*10**5+2\nfor i in a:\n    l[i] +=1\n    l[i+1] +=1\n    l[i+2] +=1\nprint(max(l))",
+        "error_type": "can only concatenate list (not \"int\") to list",
+        "error_line": "l = [0]*10**5+2"
+    },
+    {
+        "code": "s = 'atcoderregularcontest'\nalphabet = \"abcdefghijklmnopqrstuvwxyz\"\nfor i in range(alphabet):\n  if alphabet[i] not in s:\n    print(i)\n    break",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(alphabet):"
+    },
+    {
+        "code": "N = 7\npower = [64,32,16,8,4,2,1]\nfor i in power:\n  if N <= power:\n    print(power)\n    break",
+        "error_type": "'<=' not supported between instances of 'int' and 'list'",
+        "error_line": "if N <= power:"
+    },
+    {
+        "code": "N = 4\na = [2100, 2500, 2700, 2700]\ncolors = [0] * 9\nfor i in range(N):\n    if 1 <= a[i] and a[i] <= 399:\n        colors[0] = 1\n    elif 400 <= a[i] and a[i] <= 799:\n        colors[1] = 1\n    elif 800 <= a[i] and a[i] <= 1199:\n        colors[2] = 1\n    elif 1200 <= a[i] and a[i] <= 1599:\n        colors[3] = 1\n    elif 1600 <= a[i] and a[i] <= 1999:\n        colors[4] = 1\n    elif 2000 <= a[i] and a[i] <= 2399:\n        colors[5] = 1\n    elif 2400 <= a[i] and a[i] <= 2799:\n        colors[6] = 1\n    elif 2800 <= a[i] and a[i] <= 3199:\n        colors[7] = 1\n    else:\n        colors[8] += 1\nif sum(colors[0:8] == 0) and colors[9] >= 1:\n    MIN = 1\nelse:\n    MIN = sum(colors[0:8])\nMAX = sum(colors)\nprint(MIN, MAX)",
+        "error_type": "'int' object is not callable",
+        "error_line": "if sum(colors[0:8] == 0) and colors[9] >= 1:"
+    },
+    {
+        "code": "o = 'xyz'\ne = 'abc'\nans = \"\"\nfor i in len(o):\n  ans += o[i]\n  if len(e) > i:\n    ans += e[i]\nprint(ans)",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for i in len(o):"
+    },
+    {
+        "code": "o = ['x', 'y', 'z']\ne = ['a', 'b', 'c']\nif len(o) > len(e):\n  e.append(\"\")\nfor i in range(o):\n  print(o[i] + e[i], end='')",
+        "error_type": "'list' object cannot be interpreted as an integer",
+        "error_line": "for i in range(o):"
+    },
+    {
+        "code": "s = '01B0'\nresult = []\nfor i in range(len(s)):\n  if '0' == i[s]:\n    result.append(0)\n  elif '1' == i[s]:\n    result.append(1)\n  elif 'B' == i[s]:\n    if 0 == len(result):\n      pass\n    else:\n      result.pop()\nprint(result)",
+        "error_type": "'int' object is not subscriptable",
+        "error_line": "if '0' == i[s]:"
+    },
+    {
+        "code": "import math\nn = 5\na = 3\nb = 2\nc = 4\nd = 3\ne = 5\nmiti=[a,b,c,d,e]\nmini=min(miti)\nretu=n//miti\nif n<=mini:\n  print(5)\nelse:\n  print(4+retu)",
+        "error_type": "'str' object is not callable",
+        "error_line": "retu=n//miti"
+    },
+    {
+        "code": "import math\nN = '5'\nai = ['1', '3', '4', '5', '7']\nnum = 0\nfor i in range(N/2):\n    if ai[i + 1] % 2 == 1:\n        num += 1\nprint(num)",
+        "error_type": "unsupported operand type(s) for /: 'str' and 'int'",
+        "error_line": "for i in range(N/2):"
+    },
+    {
+        "code": "a = ['3200']\ns = 'pink'\nif a >= 3200:\n  print(s)\nelse:\n  print('Red')",
+        "error_type": "'>=' not supported between instances of 'list' and 'int'",
+        "error_line": "if a >= 3200:"
+    },
+    {
+        "code": "a = '3200'\ns = 'pink'\nif a < 3200:\n    print(s)\nelif a >= 3200:\n    print(\"red\")",
+        "error_type": "'<' not supported between instances of 'str' and 'int'",
+        "error_line": "if a < 3200:"
+    },
+    {
+        "code": "a = '3200'\ns = 'pink'\nif a >= 3200 :\n  print( s )\nelse:\n  print( 'red' )",
+        "error_type": "'>=' not supported between instances of 'str' and 'int'",
+        "error_line": "if a >= 3200 :"
+    },
+    {
+        "code": "import math\nn = 5\nl = None\nfor i,x in enumerate(l):\n  if n%2 and x!=int((i+1)/2):\n    print(0)\n  else:\n    if i%2 and i+1!=x:\n      print(0)\n    elif i!=x:\n      print(0)\nelse:\n  print(((n/2)**2)%10**9+7)",
+        "error_type": "'NoneType' object is not iterable",
+        "error_line": "for i,x in enumerate(l):"
+    },
+    {
+        "code": "N = 3\nL = [1, 2, 3]\nv=[]\nfor i in range(N-1):\n  v.append(abs(sum(L[:i+1]-L[i+1:])))\nans=min(v)\nprint(v)",
+        "error_type": "unsupported operand type(s) for -: 'list' and 'list'",
+        "error_line": "v.append(abs(sum(L[:i+1]-L[i+1:])))"
+    },
+    {
+        "code": "n = 3\nmlist = [1, 2, 3]\nnlist =[]\nfor i in range(n):\n  nlist.append(abs(mlist[:i]-mlist[i:]))\nprint(min(nlist))",
+        "error_type": "unsupported operand type(s) for -: 'list' and 'list'",
+        "error_line": "nlist.append(abs(mlist[:i]-mlist[i:]))"
+    },
+    {
+        "code": "Number = '3'\ntresure_value = [10, 2, 5]\ncost = [6, 3, 4]\ncount = 0\nfor i in range(Number):\n  benefit = int(tresure_value[i] - cost[i])\n  if benefit  > 0:\n    count += benefit \nprint(count)",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(Number):"
+    },
+    {
+        "code": "n = '2018'\na = '218'\nx = n%500\nif x<=a:\n  print(\"YES\")\nelse:\n  print(\"NO\")",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "x = n%500"
+    },
+    {
+        "code": "N = '2018'\nA = '218'\nB=N%500\nif(int(B)-int(A)==0):\n    print(\"Yes\")\nelse:\n    print(\"No\")",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "B=N%500"
+    },
+    {
+        "code": "import sys\nK = 4\nA = [3, 4, 3, 2]\nA.reverse()\njmax, jmin = 2,2\nif A[0] != 2:\n    print(-1)\n    sys.exit()\nfor i in range(0,K-1):  \n    Round = list(range(jmin,jmax+1))\n    if not(0 in Round % A[i]):\n        print(-1)\n        sys.exit()\n    jmin = (int(jmin/A[i])+1)*A[i]\n    jmax = (int(jmax/A[i]))*A[i] +A[i]-1\njmax = jmax + A[K-1] -1\nprint(jmin, jmax)",
+        "error_type": "'list' object is not callable",
+        "error_line": "if not(0 in Round % A[i]):"
+    },
+    {
+        "code": "n = 4\nh = [6, 5, 6, 8]\nmax = 0\nfor i in n:\n    if max <= h[i]:\n        max = h[i]\n        count += 1\nprint(count)",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for i in n:"
+    },
+    {
+        "code": "N = 4\nlist = ['6', '5', '6', '8']\nans = 0\nmaxHeight = -1\nfor i in range(N):\n  if list[i] >= maxHeight:\n    ans += 1\n    maxHeight = list[i]\nprint(ans)",
+        "error_type": "'>=' not supported between instances of 'str' and 'int'",
+        "error_line": "if list[i] >= maxHeight:"
+    },
+    {
+        "code": "N = '4'\nH = [6, 5, 6, 8]\ncnt=1\nfor i in range(N+1):\n  if H[i] < H[i+1]:\n    cnt+=1\nprint(cnt)",
+        "error_type": "can only concatenate str (not \"int\") to str",
+        "error_line": "for i in range(N+1):"
+    },
+    {
+        "code": "x = '12'\nl = len(x)\na = 0\nfor i in range(l):\n  a += int(x[i])\nif a%x ==0:\n  print('Yes')\nelse:\n  print('No')",
+        "error_type": "unsupported operand type(s) for %: 'int' and 'str'",
+        "error_line": "if a%x ==0:"
+    },
+    {
+        "code": "N = '12'\nf=0\nfor i in range(len(N)):\n  f+=int(N[i])\nif N%f==0:\n  print(\"Yes\")\nelse:\n  print(\"No\")",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "if N%f==0:"
+    },
+    {
+        "code": "N = '12'\nX = 0\nfor i in range(len(N)):\n  X += int(N[i])\nif N % X == 0:\n  print(\"Yes\")\nelse:\n  print(\"No\")",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "if N % X == 0:"
+    },
+    {
+        "code": "num = 6\ni = 0\nwhile True:\n    bef = range(1,i)\n    i += 1\n    aft = range(1,i)\n    if bef < num <= aft:\n        print(i-1)\n        break",
+        "error_type": "'<' not supported between instances of 'range' and 'int'",
+        "error_line": "if bef < num <= aft:"
+    },
+    {
+        "code": "n = 2\nl = [3, 1]\na = 0\nb = 0\nl.sort(reverser=True)\nfor i in range(n):\n  if i % 2 == 0:\n    a += l[i]\n  else:\n    b += l[i]\nprint(a-b)",
+        "error_type": "'reverser' is an invalid keyword argument for sort()",
+        "error_line": "l.sort(reverser=True)"
+    },
+    {
+        "code": "N = 2\na = [3, 1]\nAlice=0\nBob=0\na.sort(reversed=True)\nfor i in range(N):\n    if i % 2 == 0:\n        Alice+=a[i]\n    else:\n        Bob+=a[i]\nif Alice>Bob:\n    print(Alice-Bob)\nelse:\n    print(Bob-Alice)",
+        "error_type": "'reversed' is an invalid keyword argument for sort()",
+        "error_line": "a.sort(reversed=True)"
+    },
+    {
+        "code": "btns = ['5', '3']\nX=btns[0]\nY=btns[1]\nCoins=0\nfor i in range(2):\n    if X > Y:\n        Coins+=X\n        X -= 1\n    else:\n        Coins+=Y\n        Y-=1\nprint(Coins)",
+        "error_type": "unsupported operand type(s) for +=: 'int' and 'str'",
+        "error_line": "Coins+=X"
+    },
+    {
+        "code": "S = 'azzel'\nT = 'apple'\nf = [-1 for _ in range(130)]\ng = [-1 for _ in range(130)]\nans = \"Yes\"\nfor i in len(S):\n  s = ord(S[i])\n  t = ord(T[i])\n  if f[s] == -1:\n    f[s] = t\n  else:\n    if f[s] != t:\n      ans = \"No\"\n  if g[t] == -1:\n    g[t] = s\n  else:\n    if g[t] != s:\n      ans = \"No\"\nprint(ans)",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for i in len(S):"
+    },
+    {
+        "code": "s = 'ABC'\nif s[1]=='B':\n  s[1]='R'\nelse:\n  s[1]='B'\nprint(s)",
+        "error_type": "'str' object does not support item assignment",
+        "error_line": "s[1]='R'"
+    },
+    {
+        "code": "import re\nS = 'bac'\nfind_a= re.findall(\"a\")\nfind_b = re.findall(\"b\")\nfind_c = re.findall(\"c\")\nif find_a and find_b and find_c:\n    print(\"Yes\")\nelse:\n    print(\"No\")",
+        "error_type": "findall() missing 1 required positional argument: 'string'",
+        "error_line": "find_a= re.findall(\"a\")"
+    },
+    {
+        "code": "n = 3\ns = ['acinnorstt', 'abbemnoptu', 'acinnorstt']\nans=0\ndict={}\nfor i in s:\n    if i in dict:\n        ans+=dict[s]\n        dict[s]+=1\n    else:\n        dict[s]=1\nprint(ans)",
+        "error_type": "unhashable type: 'list'",
+        "error_line": "dict[s]=1"
+    },
+    {
+        "code": "from collections import Counter\nn = 3\nstring_list = [Counter({'a': 1, 'c': 1, 'o': 1, 'r': 1, 'n': 2, 'i': 1, 's': 1, 't': 2}), Counter({'p': 1, 'e': 1, 'a': 1, 'n': 1, 'u': 1, 't': 1, 'b': 2, 'o': 1, 'm': 1}), Counter({'c': 1, 'o': 1, 'n': 2, 's': 1, 't': 2, 'r': 1, 'a': 1, 'i': 1})]\nstring_set=set(string_list)\ncnt=0\nfor s in string_set:\n  n=string_list.count(s)\n  cnt+=int(n*(n-1)/2)\nprint(cnt)",
+        "error_type": "unhashable type: 'Counter'",
+        "error_line": "string_set=set(string_list)"
+    },
+    {
+        "code": "n = 10\nans = 0\nfor s, t in range(8):\n  if n == s*t:\n    ans += 1\nif ans == 0:\n  print('No')\nelse:\n  print('Yes')",
+        "error_type": "cannot unpack non-iterable int object",
+        "error_line": "for s, t in range(8):"
+    },
+    {
+        "code": "x = ['3', '8', '1']\ni = list(map(int(x)))\na = i[0]\nb = i[1]\nc = i[2]\nprint('{} {} {}'.format(c,b,a))",
+        "error_type": "int() argument must be a string, a bytes-like object or a real number, not 'list'",
+        "error_line": "i = list(map(int(x)))"
+    },
+    {
+        "code": "n = 4\nalist = [3, 3, 3, 3]\nfrom collections import Counter\nadic = Counter(alist)\ncount = 0\nfor key,value in adic:\n  if int(key) <= value:\n    count+=(value-int(key))\n  else:\n    count+=value\nprint(count)",
+        "error_type": "cannot unpack non-iterable int object",
+        "error_line": "for key,value in adic:"
+    },
+    {
+        "code": "s = 'apple'\ns_list=list(s)\nx=len(s_list)\na_list=reversed(s_list)\nif a_list[0]==\"s\":\n  s_list[x]=\"e\"\n  s_list[x+1]=\"s\"\nelse:\n  s_list[x+1]=\"s\"\nprint(s_list)",
+        "error_type": "'list' object is not callable",
+        "error_line": "if a_list[0]==\"s\":"
+    },
+    {
+        "code": "s = '000'\nn=len(s)\ns = bin(int(s, 2))\ns_10 = '1' * (n % 2) + '01' * (n // 2)\ns_01 = '0' * (n % 2) + '10' * (n // 2)\ns_10 = bin(int(s_10, 2))\ns_01 = bin(int(s_01, 2))\nr = s ^ s_01\nl = s ^ s_10\nprint(min(r.count('1'), l.count('1')))",
+        "error_type": "unsupported operand type(s) for ^: 'str' and 'str'",
+        "error_line": "r = s ^ s_01"
+    },
+    {
+        "code": "n = '5'\nli = [5, 2, 3, 4, 1]\nfalse = 0\nfor i in range(n):\n    if i != li[i]:\n        false += 1\nif false == 0 or false == 2:\n    print('YES')\nelse:\n    print('N0')",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(n):"
+    },
+    {
+        "code": "X = 1024\nA=0\nG=0\nN=0\nM=0\nZ=0\nN=X/500\nM=int(X%500)\nZ=M/5\nN=N+Z\nfor i in range(0,N):\n    if X-500:\n        X=X-500\n        G=G+1000\n    elif X-5:\n        X=X-5\n        G=G+5\n    else:\n        break\nprint(G)",
+        "error_type": "'float' object cannot be interpreted as an integer",
+        "error_line": "for i in range(0,N):"
+    },
+    {
+        "code": "n = [3]\na = ['8', '12', '40']\nb = 0\nc = 0\nwhile True:\n    b = min(a) / 2\n    if b <= 1:\n        break\n    c = c + 1\nprint(c)",
+        "error_type": "'int' object is not callable",
+        "error_line": "b = min(a) / 2"
+    },
+    {
+        "code": "ans = [105,135,165,189]\nn = '105'\nif n < 105:\n  print(0)\nelif n < 135:\n  print(1)\nelif n < 165:\n  print(2)\nelif n < 189:\n  print(3)\nelse:\n  print(4)",
+        "error_type": "'<' not supported between instances of 'str' and 'int'",
+        "error_line": "if n < 105:"
+    },
+    {
+        "code": "n = 6\na = [1, 2, 3, 4, 5, 6]\nmemo = sum(a)\na=a[0]\nb=memo-a[0]\nans = abs(a-b)\nfor i in range(1,n-1):\n    a += a[i]\n    b -= a[i]\n    ans = min(ans,abs(a-b))\nprint(ans)",
+        "error_type": "'int' object is not callable",
+        "error_line": "b=memo-a[0]"
+    },
+    {
+        "code": "a = '2017/01/07'\ns = \"\"\nfor i in range(a):\n    if i == 3:s+=\"8\"\n    else:s+=a[i]\nprint(s)",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(a):"
+    },
+    {
+        "code": "import itertools\nimport copy\nfrom collections import deque\nimport heapq\nab = ['198', '1.10']\nA = int(ab[0])\nB = int(float(ab)*100)\nans = (A*B)//100\nprint(ans)",
+        "error_type": "float() argument must be a string or a real number, not 'list'",
+        "error_line": "B = int(float(ab)*100)"
+    },
+    {
+        "code": "N = 4\nL = [3, 8, 5, 1]\nif L[:-1] > L[-1]:\n  print(\"Yes\")\nelse:\n  print(\"No\")",
+        "error_type": "'>' not supported between instances of 'list' and 'int'",
+        "error_line": "if L[:-1] > L[-1]:"
+    },
+    {
+        "code": "miu = ['3', '1']\nsella = 'ABC'\nfor x in range(0, int(miu[0])):\n  if x == int(miu[1]-1):\n    print(sella[x].lower(), end='')\n  else:\n    print(sella[x], end='')",
+        "error_type": "unsupported operand type(s) for -: 'str' and 'int'",
+        "error_line": "if x == int(miu[1]-1):"
+    },
+    {
+        "code": "temp = [3, 1]\nS = 'ABC'\nK=int(temp[1]-1)\nif S[K]=='A':\n  S[K]='a'\nelif S[K]=='B':\n  S[K]='b'\nelse:\n  S[K]='c'\nprint(S)",
+        "error_type": "'str' object does not support item assignment",
+        "error_line": "S[K]='a'"
+    },
+    {
+        "code": "s = 46979\nm = s // 60\nh = m // 60\ns = s % 60\noutput=\"\"\nif(h!=0):\n   output+=int(h)\noutput+=\":\"\nif(m!=0):\n   output+=int(m)\noutput+=\":\"\nif(s!=0):\n   output+=int(s)\nprint(output)",
+        "error_type": "can only concatenate str (not \"int\") to str",
+        "error_line": "output+=int(h)"
+    },
+    {
+        "code": "sec_time = 46979\nhour = sec_time // 3600\nminutes = sec_time % 3600 // 60\nseconds = sec_time % 3600 % 60\ntime = ':'.join(hour, minutes, seconds)\nprint(time)",
+        "error_type": "str.join() takes exactly one argument (3 given)",
+        "error_line": "time = ':'.join(hour, minutes, seconds)"
+    },
+    {
+        "code": "S = 'cupofcoffee'\nT = 'cupofhottea'\ncount = 0\nfor i in len(S):\n    if S[i] != T[i]:\n        count+= 1\nprint(count)",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for i in len(S):"
+    },
+    {
+        "code": "S = 'cupofcoffee'\nT = 'cupofhottea'\ncount = 0\nfor (s,t) in map(S,T):\n  if s != t:\n    count += 1\nprint(count)",
+        "error_type": "'str' object is not callable",
+        "error_line": "for (s,t) in map(S,T):"
+    },
+    {
+        "code": "S = 'chokudai'\nT = 'chokudaiz'\nif S+1 in T:\n  print(\"Yes\")\nelse:\n  print(\"No\")",
+        "error_type": "can only concatenate str (not \"int\") to str",
+        "error_line": "if S+1 in T:"
+    },
+    {
+        "code": "N = '117'\njudge = \"No\"\nfor i in 3:\n  if N[i] == 7:\n    judge = \"Yes\"\n    break\nprint(judge)",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for i in 3:"
+    },
+    {
+        "code": "N = '15'\nSum = 0\nfor k in range(N):\n    i = k+1\n    if i % 3 != 0 and i % 5 != 0:\n        Sum = Sum + i\nprint(Sum)",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for k in range(N):"
+    },
+    {
+        "code": "n = '15'\nsum1=0\nfor i in range(n):\n    if not(i%3==0 or i%5==0):\n        sum1=sum1+i\n    else:\n        sum1=sum1\nprint(sum1)",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(n):"
+    },
+    {
+        "code": "s = 'akasaka'\nn=len(s)\nif s[:(n-1)/2-1]==s[:(n-1)/2-1][::-1] and s==s[::-1]:\n  print('Yes')\nelse:\n  print('No')",
+        "error_type": "slice indices must be integers or None or have an __index__ method",
+        "error_line": "if s[:(n-1)/2-1]==s[:(n-1)/2-1][::-1] and s==s[::-1]:"
+    },
+    {
+        "code": "s = ['a', 'k', 'a', 's', 'a', 'k', 'a']\nn = len(s)\nif n==n[::-1] and n[0:int((n-1)/2)]==n[0:int((n-1)/2)][::-1] and n[int((n+3)/2-1):n]==n[int((n+3)/2-1):n][::-1]:\n  print('Yes')\nelse:\n  print('No')",
+        "error_type": "'int' object is not subscriptable",
+        "error_line": "if n==n[::-1] and n[0:int((n-1)/2)]==n[0:int((n-1)/2)][::-1] and n[int((n+3)/2-1):n]==n[int((n+3)/2-1):n][::-1]:"
+    },
+    {
+        "code": "N = '5'\nif N%2 ==0:\n  ans = N%2\n  print(ans)\nelse :\n  ans = N%2 + 0.5\n  print(int(ans))",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "if N%2 ==0:"
+    },
+    {
+        "code": "n = 5\nli = [4, 2, 5, 1, 3]\ntmpMinIndex = li.index(1)\ncount = 0\nwhile True:\n    count += 1\n    tmpMinIndex = li[0:tmpMinIndex]\n    if tmpMinIndex == 0:\n        break\nprint(count)",
+        "error_type": "slice indices must be integers or None or have an __index__ method",
+        "error_line": "tmpMinIndex = li[0:tmpMinIndex]"
+    },
+    {
+        "code": "S = 'redcoder'\nnum = 0\nfor i in range(len(S)):\n  if not(S[i] == S[-(1+i)]):\n    S[i] = S[-1+i]\n    num +=1\nprint(num)",
+        "error_type": "'str' object does not support item assignment",
+        "error_line": "S[i] = S[-1+i]"
+    },
+    {
+        "code": "r=0\ns = 'redcoder'\nfor n in len(s):\n  if s[n]!=s[-n]:\n    r+=1\nprint(r/2)",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for n in len(s):"
+    },
+    {
+        "code": "s = 'CSS'\nt = 'CSR'\nc=0\nfor i in (2):\n  if s[i]==t[i]:\n    c+=1\nprint(c)",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for i in (2):"
+    },
+    {
+        "code": "n = 2\nvn = None\nsumV = vn[0]\nfor v in vn[1:]:\n    sumV = (sumV + v)/2\nprint(sumV)",
+        "error_type": "'NoneType' object is not subscriptable",
+        "error_line": "sumV = vn[0]"
+    },
+    {
+        "code": "n = 5\np = [1, 3, 5, 4, 2]\nt=0\nfor i in range(n):\n  if i!=0 or i!=n-1:\n    l=list(p[i-1], p[i], p[i+1])\n    l.sort()\n    if l[1]==p[i]:\n      t+=1\nprint(t)",
+        "error_type": "'list' object is not callable",
+        "error_line": "l=list(p[i-1], p[i], p[i+1])"
+    },
+    {
+        "code": "import numpy as np\na = 1\nb = 2\nc = 4\nd = 8\ne = 9\nA = a % 10\nB = b % 10\nC = c % 10\nD = d % 10\nE = e % 10\nS = []\nsum = 0\nif A != 0:\n  S.append(A)\nif B != 0:\n  S.append(B)\nif C != 0:\n  S.append(C)\nif D != 0:\n  S.append(D)\nif E != 0:\n  S.append(E)\nif len(S) == 0:\n  sum = a + b + c + d + e\nelse:\n  sum = (a //10 + b //10 + c //10 + d //10 + e //10)*10 + 10*(len(A) - 1) +min(S)\nprint(sum)",
+        "error_type": "object of type 'int' has no len()",
+        "error_line": "sum = (a //10 + b //10 + c //10 + d //10 + e //10)*10 + 10*(len(A) - 1) +min(S)"
+    },
+    {
+        "code": "a = '1'\nb = '2'\nc = '4'\nd = '8'\ne = '9'\nk = '15'\nf=[b-a,c-b,d-c,e-d]\nif((f[0]>k) or (f[1]>k) or (f[2]>k)or (f[3]>k)):\n  print(':(')\nelif(((f[0]+f[1])>k)or ((f[1]+f[2])>k)or ((f[2]+f[3])>k)):\n  print(':(')\nelif(((f[0]+f[1]+f[2])>k) or((f[1]+f[2]+f[3])>k)):\n  print(':(')\nelif((e-a)>k):\n  print(':(')\nelse:\n  print('Yay!')",
+        "error_type": "unsupported operand type(s) for -: 'str' and 'str'",
+        "error_line": "f=[b-a,c-b,d-c,e-d]"
+    },
+    {
+        "code": "S = '2019/04/30'\nwk = S[:4]+S[5:7]+S[8:10]\nif wk<20190430:\n    print(\"Heisei\")\nelse:\n    print(\"TBD\")",
+        "error_type": "'<' not supported between instances of 'str' and 'int'",
+        "error_line": "if wk<20190430:"
+    },
+    {
+        "code": "s = '2019/04/30'\nif s[5] == '1':\n  print('TBD')\nelse:\n  if s[6] > 4:\n    print('TBD')\n  else:\n    print('Heisei')",
+        "error_type": "'>' not supported between instances of 'str' and 'int'",
+        "error_line": "if s[6] > 4:"
+    },
+    {
+        "code": "s = '119'\nif s[0] == '1':\n  s[0] = '9'\nelse:\n  s[0] = '1'\nif s[1] == '1':\n  s[1] = '9'\nelse:\n  s[1] = '1'\nif s[2] == '1':\n  s[2] = '9'\nelse:\n  s[2] = '1'\nprint(s)",
+        "error_type": "'str' object does not support item assignment",
+        "error_line": "s[0] = '9'"
+    },
+    {
+        "code": "n = '119'\nfor i in range(n):\n  if n[i] == '9':\n    n[i] = '1'\n  else:\n    n[i] = '9'\nprint(n)",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(n):"
+    },
+    {
+        "code": "n = '119'\nans = \"\"\nfor i in range(n):\n    if n[i] == 1:\n        ans += \"9\"\n    else:\n        ans += \"1\"\nprint(int(ans))",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(n):"
+    },
+    {
+        "code": "n = '119'\nfor i in range(len(n)):\n  if n[i] == '1':\n    n[i] = '9'\n  elif n[i] == '9':\n    n[i] = '1'\nprint(n)",
+        "error_type": "'str' object does not support item assignment",
+        "error_line": "n[i] = '9'"
+    },
+    {
+        "code": "n = '111'\nl = [111, 222, 333, 444, 555, 666, 777, 888, 999]\nfor i in l:\n    if n<=i:\n        print(i)\n        break",
+        "error_type": "'<=' not supported between instances of 'str' and 'int'",
+        "error_line": "if n<=i:"
+    },
+    {
+        "code": "r = '1199'\nif r < 1200:\n  print(ABC)\nif 1200 <= r < 2800:\n  print(ARC)\nelse:\n  print(AGC)",
+        "error_type": "'<' not supported between instances of 'str' and 'int'",
+        "error_line": "if r < 1200:"
+    },
+    {
+        "code": "r = '1199'\nif r<1200:\n    print(\"ABC\")\nelif 1200<r<2800:\n    print(\"ARC\")\nelse:\n    print(\"AGC\")",
+        "error_type": "'<' not supported between instances of 'str' and 'int'",
+        "error_line": "if r<1200:"
+    },
+    {
+        "code": "n = '999'\nif n >= 1000:\n    ans = \"ABD\"\nelse:\n    ans = \"ABC\"\nprint(ans)",
+        "error_type": "'>=' not supported between instances of 'str' and 'int'",
+        "error_line": "if n >= 1000:"
+    },
+    {
+        "code": "n = 3\ns = ['apple', 'orange', 'apple']\nm = 1\nt = ['grape']\nS=set(s[i] for i in range(n))\nL=len(S)\na=[0]*(L+1)\nfor i in range(L):\n    a[i]=s.count(S[i])-t.count(S[i])\nprint(max(a))",
+        "error_type": "'set' object is not subscriptable",
+        "error_line": "a[i]=s.count(S[i])-t.count(S[i])"
+    },
+    {
+        "code": "input_list = '3 4'\nresult = input_list[0]*input_list[1]\nif result % 2 == 0:\n  print('Even')\nelse:\n  print('Odd')",
+        "error_type": "can't multiply sequence by non-int of type 'str'",
+        "error_line": "result = input_list[0]*input_list[1]"
+    },
+    {
+        "code": "N = 1118\na = list(N)\nif N[0]==N[1]==N[2]==N[3] or N[0]==N[1]==N[2] or N[1]==N[2]==N[3]:\n    print('Yes')\nelse:\n    print('No')",
+        "error_type": "'list' object is not callable",
+        "error_line": "a = list(N)"
+    },
+    {
+        "code": "n = 10000\nimport math\nfor i in range (math.sqrt(n),0,-1):\n  if n%i==0:\n    print(max(len(str(i)),len(str(n//i))))\n    quit()",
+        "error_type": "'float' object cannot be interpreted as an integer",
+        "error_line": "for i in range (math.sqrt(n),0,-1):"
+    },
+    {
+        "code": "n = 5\ns = 'IIDID'\nx = 0\nans = 0\nfor c in x:\n  if c == \"I\":\n    x += 1\n  else:\n    x -= 1\n  if x > ans:\n    ans = x\nprint(ans)",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for c in x:"
+    },
+    {
+        "code": "A = ['k', 'y', 'o', 't', 'o']\nT = 'tokyo'\ncheck = 'No'\nfor i in range(len(A)):\n  if ''.join(A) == T:\n    check = 'Yes'\n  A.insert(A.pop(-1))\nprint(check)",
+        "error_type": "insert expected 2 arguments, got 1",
+        "error_line": "A.insert(A.pop(-1))"
+    },
+    {
+        "code": "s = 'kyoto'\nt = 'tokyo'\nfor i in range(s):\n    s.insert(0, s.pop(-1))\n    if s == t:\n        print(\"Yes\")\nprint(\"No\")",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(s):"
+    },
+    {
+        "code": "n = 5\nl = [10, 1, 5, 4, 17]\nsum = 0\nfor i in range(n):\n    sum += l[i]\nprint(min(l), max(l), sum(l))",
+        "error_type": "'int' object is not callable",
+        "error_line": "print(min(l), max(l), sum(l))"
+    },
+    {
+        "code": "num = 5\nlis = [10, 1, 5, 4, 17]\nsum = 0\nmin = list[0]\nmax = list[0]\nfor i in range(num):\n    if(min > list[i]):min = list[i]\n    if(max < list[i]):max = list[i]\n    sum = sum+list[i]\nprint(\"%d %d %d\" %(min,max,sum))",
+        "error_type": "unsupported operand type(s) for +: 'int' and 'str'",
+        "error_line": "if(min > list[i]):min = list[i]"
+    },
+    {
+        "code": "N = '5'\nK = '3'\nX = '10000'\nY = '9000'\nif N<=K:\n  print(N*X)\nelse:\n  print(K*X + (N-K)*Y)",
+        "error_type": "can't multiply sequence by non-int of type 'str'",
+        "error_line": "print(K*X + (N-K)*Y)"
+    },
+    {
+        "code": "n = 10\nt = 'aabbbbaaca'\nans=t[0]\nfor i in range(1,n):\n    if ans[-1]==i:\n        pass\n    else:\n        ans=ans+i\nprint(len(ans))",
+        "error_type": "can only concatenate str (not \"int\") to str",
+        "error_line": "ans=ans+i"
+    },
+    {
+        "code": "_input = '2 2919'\nnumber = _input.split()\nN = number[0]\nR = number[1]\nif N<10:\n  R += 100 * (10-N)\nprint(R)",
+        "error_type": "'<' not supported between instances of 'str' and 'int'",
+        "error_line": "if N<10:"
+    },
+    {
+        "code": "N = 5\nnums = [2, 1, 4, 5, 3]\nans = 0\nnums_sorted = nums[:]\nnums_sorted = list(set(nums_sorted))\nnums_sorted.sort(reverse=True)\ndi = {}\nfor i in range(N-1):\n    if nums[i] > nums[i+1]:\n        ans += 1\nnums_l = len(nums)\nnums_s = len(list(set(nums)) )\nans += nums_l - nums_s\nif len(nums_s) == 1:\n    ans += 1\nprint(ans)",
+        "error_type": "'list' object is not callable",
+        "error_line": "if len(nums_s) == 1:"
+    },
+    {
+        "code": "n = '4'\ns = 'RRBR'\nt=s.count('R')\nif 2*t>n:\n    print('Yes')\nelse:\n    print('No')",
+        "error_type": "'>' not supported between instances of 'int' and 'str'",
+        "error_line": "if 2*t>n:"
+    },
+    {
+        "code": "a = 'pot'\nb = 'top'\nif a[0]==b[2] and a[1]==b[a] and a[2]==b[0]:\n  print(\"Yes\")\nelse:\n  print(\"No\")",
+        "error_type": "string indices must be integers",
+        "error_line": "if a[0]==b[2] and a[1]==b[a] and a[2]==b[0]:"
+    },
+    {
+        "code": "s = '100 17'\nx=list(s)\nout=\"\"\nfor i in range(x):\n  if (i+1) % 2 ==0:\n    out+=x[i]\nprint(out)",
+        "error_type": "'list' object is not callable",
+        "error_line": "for i in range(x):"
+    },
+    {
+        "code": "N = 5\nA = [3, 2, 2, 4, 1]\nB = [1, 2, 2, 2, 1]\nans=0\nfor i in range(N):\n  A = sum(A[:i+1]+B[i:])\n  ans=max(ans,B)\nprint(ans)",
+        "error_type": "'int' object is not callable",
+        "error_line": "ans=max(ans,B)"
+    },
+    {
+        "code": "x = 103\na=100\nk=0\nwhile(1):\n  k+=1\n  a=a+a(1//100)\n  if(a>=x):break\nprint(k)",
+        "error_type": "'int' object is not callable",
+        "error_line": "a=a+a(1//100)"
+    },
+    {
+        "code": "num = '103'\na = 100\ncount = 0\nwhile count>=0:\n  a = a * 1.1\n  count = count + 1\n  if a>=num:\n    break\nprint(count)",
+        "error_type": "'>=' not supported between instances of 'float' and 'str'",
+        "error_line": "if a>=num:"
+    },
+    {
+        "code": "n = 'C0DEFESTIVAL2O16'\na = 0\na = \"CODEFESTIVAL2016\"\nfor i, j in zip(n, a):\n  if i != j:\n    a += 1\nprint(a)",
+        "error_type": "can only concatenate str (not \"int\") to str",
+        "error_line": "a += 1"
+    },
+    {
+        "code": "L = [5, 7, 5]\nM =L.sort()\nif M[0]==M[1]:\n  print(M[2])\nelse:\n  print(M[0])",
+        "error_type": "'NoneType' object is not subscriptable",
+        "error_line": "if M[0]==M[1]:"
+    },
+    {
+        "code": "abck = ['2', '1', '1', '3']\na=abck[0]\nb=abck[1]\nc=abck[2]\nk=abck[3]\nif a>=k:\n    print(a)\nelif a<k:\n    if a+b>k:\n        print(a)\n    else:\n        print(a-(k-a-b))",
+        "error_type": "unsupported operand type(s) for -: 'str' and 'str'",
+        "error_line": "print(a-(k-a-b))"
+    },
+    {
+        "code": "n = '432'\na = n / 1.08\nif a-int(a) == 0.00:\n      x = int(a)\nelse:\n      x = int(a) + 1\nv = int(x * 1.08)\nif v == n:\n  print(x)\nelse:\n  print(\":(\")",
+        "error_type": "unsupported operand type(s) for /: 'str' and 'float'",
+        "error_line": "a = n / 1.08"
+    },
+    {
+        "code": "n = '3'\nmax = 10**9 + 7\na_list = [1, 2, 3]\nsum = 0\nfor i in range(0, len(a_list)-1):\n    sum += a_list[i] * sum(a_list[i+1:])\nsum = sum % max\nprint(sum)",
+        "error_type": "'int' object is not callable",
+        "error_line": "sum += a_list[i] * sum(a_list[i+1:])"
+    },
+    {
+        "code": "n = 3\na = [1, 2, 3]\nsum1 = 0\nsum2 = 0\nfor _ in a:\n  sum1 += _\n  sum2 += (a*a)\nsum1 = (sum1 * sum1)\nprint(sum1 - sum2)",
+        "error_type": "can't multiply sequence by non-int of type 'list'",
+        "error_line": "sum2 += (a*a)"
+    },
+    {
+        "code": "answer = '1000 15 80'\nanswer = answer.split(' ')\nif answer[2]*answer[1]>=answer[0]:\n  print(Yes)\nelse :\n  print(No)",
+        "error_type": "can't multiply sequence by non-int of type 'str'",
+        "error_line": "if answer[2]*answer[1]>=answer[0]:"
+    },
+    {
+        "code": "N = '6 4 3'\nans = 0\nfor i in range(1, N + 1):\n    if len(str(i)) % 2 is 1:\n      ans += 1\nprint(ans)",
+        "error_type": "can only concatenate str (not \"int\") to str",
+        "error_line": "for i in range(1, N + 1):"
+    },
+    {
+        "code": "N = '2'\nST = 'ip cc'\nS=ST.split(' ')[0]\nT=ST.split(' ')[1]\nfor i in range(N):\n  result.append(S[i])\n  result.append(T[i])\nprint(result)",
+        "error_type": "'str' object cannot be interpreted as an integer",
+        "error_line": "for i in range(N):"
+    },
+    {
+        "code": "S = '1817181712114'\ncnt = [0]*2019\ncnt[0] = 1\nn = 0\nt = 1\nfor i in reversed(S):\n    n += i*t\n    n %= 2019\n    cnt[n] += 1\n    t *= 10\n    t %= 2019\nprint(sum(i*(i-1)//2 for i in cnt))",
+        "error_type": "unsupported operand type(s) for +=: 'int' and 'str'",
+        "error_line": "n += i*t"
+    },
+    {
+        "code": "N = 3\ns = ['apple', 'orange', 'apple']\nmemo = []\nfor i in range(s):\n    r = s.random.choice()\n    if r not in memo:    \n        memo.append(r)    \nprint(len(memo))    ",
+        "error_type": "'list' object cannot be interpreted as an integer",
+        "error_line": "for i in range(s):"
+    },
+    {
+        "code": "x = '3'\nx = int(x)\nfor i in len(x):\n    if x == 0:\n        break\n    else:\n        print(\"Case\", i+1, \":\", x)",
+        "error_type": "object of type 'int' has no len()",
+        "error_line": "for i in len(x):"
+    },
+    {
+        "code": "x = '3'\nx = int(x)\nfor i in 100000:\n    if x == 0:\n        break\n    else:\n        print(\"Case\", i+1, \":\", x)",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for i in 100000:"
+    },
+    {
+        "code": "num = ['3', '7']\na, b = int(num[0]), int(num[1])\ntmp = []\nfor i in range(b-a+1,b+a):\n  tmp.append(i)\nprint(' '.join(tmp))",
+        "error_type": "sequence item 0: expected str instance, int found",
+        "error_line": "print(' '.join(tmp))"
+    },
+    {
+        "code": "n = 3\na = [6, 2, 6]\ndict = {}\nfor i in range(n):\n  if not(a[i] in dict):\n    dict(a[i]) ==1\n  if s[i] in dict:\n    dict.pop(a[i])\nprint(len(dict))",
+        "error_type": "'dict' object is not callable",
+        "error_line": "dict(a[i]) ==1"
+    },
+    {
+        "code": "input_line = ['41', '2']\ndays = input_line[0]\nassignments = input_line[1]\ninput_assign = ['5', '6']\nhow_many_days = sum(input_assign)\nlen = days - how_many_days\nif len < 0:\n  print(-1)\nelse:\n  print(len)",
+        "error_type": "'int' object is not callable",
+        "error_line": "how_many_days = sum(input_assign)"
+    },
+    {
+        "code": "n = '-9'\nnegBase = -2\nif (n == 0): \n    converted = \"0\"\nelse:\n    converted = \"01\"\n    while (n != 0):           \n        remainder = n % (negBase) \n        n = int(n/negBase) \n        if (remainder < 0): \n            remainder += ((-1) * negBase) \n            n += 1\n        converted = str(remainder) + converted \n    converted = converted[0:len(converted)-2]\nprint(converted)",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "remainder = n % (negBase) "
+    },
+    {
+        "code": "n = '11'\nwhile True:\n  if n%4==0:\n    print(\"YES\")\n    break\n  n-=7\n  if n<0:\n    print(\"NO\")\n    break",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "if n%4==0:"
+    },
+    {
+        "code": "n = '11'\nwhile True:\n  if n%4==0:\n    print(\"YES\")\n    exit()\n  n-=7\n  if n<0:\n    print(\"NO\")\n    exit()",
+        "error_type": "not all arguments converted during string formatting",
+        "error_line": "if n%4==0:"
+    },
+    {
+        "code": "S = '2 11 4'\nS = S.split()\nhowMuch = S[0]\nIhave = S[1]\nsutis = S[2]\nif (Ihave // howMuch) < sutis:\n    print(Ihave // howMuch)\nelse:\n    print(sutis)",
+        "error_type": "unsupported operand type(s) for //: 'str' and 'str'",
+        "error_line": "if (Ihave // howMuch) < sutis:"
+    },
+    {
+        "code": "N = 3\na = [3, 4, 6]\nans = 0\nfor aa in a:\n    ans+=a-1\nprint(ans)",
+        "error_type": "unsupported operand type(s) for -: 'list' and 'int'",
+        "error_line": "ans+=a-1"
+    },
+    {
+        "code": "i = '2 2'\nj = i.split()\nnum_balls = j[0]\nnum_colors = j[1]\nproduct = num_colors\nif(num_balls > 1 and num_colors == 1):\n  print(0)\nfor i in range(1, num_balls):\n  product *= (num_balls - 1)\nprint(product)",
+        "error_type": "'>' not supported between instances of 'str' and 'int'",
+        "error_line": "if(num_balls > 1 and num_colors == 1):"
+    },
+    {
+        "code": "s = [5, 3, 11]\nK = 1\ns = sorted()\nfor i in range(K):\n    s[2] *= 2\nprint(sum(s))",
+        "error_type": "sorted expected 1 argument, got 0",
+        "error_line": "s = sorted()"
+    },
+    {
+        "code": "num = [4, 3, 2]\nnum = \"\".join(num)\nif num % 4 == 0:\n    print(\"YES\")\nelse:\n    print(\"NO\")",
+        "error_type": "sequence item 0: expected str instance, int found",
+        "error_line": "num = \"\".join(num)"
+    },
+    {
+        "code": "a = \"\"\nb = [4, 3, 2]\nfor i in range(3):\n  a += b[i]\nif int(a)%4:\n  print(\"NO\")\nelse:\n  print(\"YES\")",
+        "error_type": "can only concatenate str (not \"int\") to str",
+        "error_line": "a += b[i]"
+    },
+    {
+        "code": "X = '725'\nif 400 <= X <= 599:\n    print(8)\nif 600 <= X <= 799:\n    print(7)\nif 800 <= X <= 999:\n    print(6)\nif 1000 <= X <= 1199:\n    print(5)\nif 1200 <= X <= 1399:\n    print(4)\nif 1400 <= X <= 1599:\n    print(3)\nif 1600 <= X <= 1799:\n    print(2)\nif 1800 <= X <= 1999:\n    print(1)",
+        "error_type": "'<=' not supported between instances of 'int' and 'str'",
+        "error_line": "if 400 <= X <= 599:"
+    },
+    {
+        "code": "X = '725'\nif X>=400 and X<=599:\n    print('8')\nif X>=600 and X<=799:\n    print('7')\nif X>=800 and X<=999:\n    print('6')\nif X>=1000 and X<=1199:\n    print('5')\nif X>=1200 and X<=1399:\n    print('4')\nif X>=1400 and X<=1599:\n    print('3')\nif X>=1600 and X<=1799:\n    print('2')\nif X>=1800 and X<=1999:\n    print('1')",
+        "error_type": "'>=' not supported between instances of 'str' and 'int'",
+        "error_line": "if X>=400 and X<=599:"
+    },
+    {
+        "code": "import itertools\nimport math\nn = 5\nl = [4, 4, 9, 7, 5]\nc = list(itertools.combinations(l, 3))\ncount=0\nr=math.factorial(len(l)) / (math.factorial(len(l) - 3) * 6)\nfor i in range(r):\n    if c[i][0]==c[i][1] or c[i][1]==c[i][2] or c[i][2]==c[i][0]:\n        pass\n    else:\n        if c[i][0]+c[i][1]>c[i][2] and c[i][1]+c[i][2]>c[i][0] and c[i][2]+c[i][0]>c[i][1]:\n            count+=1\n        else:\n            pass\nprint(count)",
+        "error_type": "'list' object is not callable",
+        "error_line": "for i in range(r):"
+    },
+    {
+        "code": "s = 'uncopyrightable'\nw=set()\nfor i in (len(s)):\n    w.add(s[i])\nif len(s)==len(w):\n    print(\"Yes\")\nelse:\n    print(\"No\")",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for i in (len(s)):"
+    },
+    {
+        "code": "N = 'red blue'\nA = ['3', '4']\nif(A in N):\n  print(\"YES\")\nelse:\n  print(\"NO\")",
+        "error_type": "'in <string>' requires string as left operand, not list",
+        "error_line": "if(A in N):"
+    },
+    {
+        "code": "color = ['red', 'blue']\nnumber = ['3', '4']\nchoice = 'red'\nfor i in [0,1]:\n  if choice == color[i]:\n    number[i] -= 1\nprint(number[0],number[1])",
+        "error_type": "unsupported operand type(s) for -=: 'str' and 'int'",
+        "error_line": "number[i] -= 1"
+    },
+    {
+        "code": "s = ['+', '-', '+', '+']\nfor i in s:\n  if s[i] == \"+\":\n    s[i] = 1\n  else:\n    s[i] = -1\nprint(sum(s))",
+        "error_type": "list indices must be integers or slices, not str",
+        "error_line": "if s[i] == \"+\":"
+    },
+    {
+        "code": "N = 1\nK = 10\nans = 0\nfor i in range(N):\n    x = int(input)\n    ans += 2*min(x,K-x)\nprint(ans)",
+        "error_type": "int() argument must be a string, a bytes-like object or a real number, not 'builtin_function_or_method'",
+        "error_line": "x = int(input)"
+    },
+    {
+        "code": "N = 1\nK = 10\nl = [2]\nans = 0\nfor i in l:\n  ans += min([K-l, l])*2\nprint(ans)",
+        "error_type": "unsupported operand type(s) for -: 'int' and 'list'",
+        "error_line": "ans += min([K-l, l])*2"
+    },
+    {
+        "code": "S = 'abaccaba'\nA = set([i for i in S])\nfor j in range(len(A)):\n  if S.count(A[j]) % 2 == 1:\n    print(\"Yes\")\n    sys.exit()\n  else:\n    None\nprint(\"No\")",
+        "error_type": "'set' object is not subscriptable",
+        "error_line": "if S.count(A[j]) % 2 == 1:"
+    },
+    {
+        "code": "N = 3\nA = [1, 2, 3]\ncnt = 0 \nfor x in A:\n  if A%2 == 1:\n    cnt += 1\nif cnt % 2 == 0:\n  print(\"YES\")\nelse:\n  print(\"NO\")",
+        "error_type": "unsupported operand type(s) for %: 'list' and 'int'",
+        "error_line": "if A%2 == 1:"
+    },
+    {
+        "code": "import math\nH = '3'\nW = '7'\nN = '10'\nm=max(H,W)\nprint(math.ceil(N/m))",
+        "error_type": "'int' object is not callable",
+        "error_line": "print(math.ceil(N/m))"
+    },
+    {
+        "code": "h = '3'\nw = '7'\nn = '10'\nif h < w:\n    a =w\nelse:\n    a=h\nans=n/a\nif n%a > 0:\n    ans+=1\nprint(ans)",
+        "error_type": "unsupported operand type(s) for /: 'str' and 'str'",
+        "error_line": "ans=n/a"
+    },
+    {
+        "code": "D = 25\nnum = 25 - D\ns = \"Christmas\"\nfor i in num:\n    s += \" Eve\"\nprint(s)",
+        "error_type": "'int' object is not iterable",
+        "error_line": "for i in num:"
+    },
+    {
+        "code": "import sys\ns = '1222'\na,b,c,d=s[0],s[1],s[2],s[3]\nif a+b+c+d==7:\n  print('a+b+c+d=7')\n  sys.exit()\nif a+b+c-d==7:\n  print('a+b+c-d=7')\n  sys.exit()\nif a+b-c+d==7:\n  print('a+b-c+d=7')\n  sys.exit()      \nif a-b+c+d==7:\n  print('a-b+c+d=7')\n  sys.exit()\nif a+b-c-d==7:\n  print('a+b-c-d=7')\n  sys.exit()\nif a-b-c+d==7:\n  print('a-b-c+d=7')\n  sys.exit()\nif a-b+c-d==7:\n  print('a-b+c-d=7')\n  sys.exit()\nif a-b-c-d==7:\n  print('a-b-c-d=7')\n  sys.exit()",
+        "error_type": "unsupported operand type(s) for -: 'str' and 'str'",
+        "error_line": "if a+b+c-d==7:"
+    },
+    {
+        "code": "N = '1222'\na=int(N[0])\nb=int(N[1])\nc=int(N[2])\nd=int(N[3])\nif a+b+c+d==7:\n  print(a+\"+\"+b+\"+\"+c+\"+\"+d+\"=\"+7)\n  exit()\nif a-b+c+d==7:\n  print(a+\"-\"+b+\"+\"+c+\"+\"+d+\"=\"+7)\n  exit()\nif a+b-c+d==7:\n  print(a+\"+\"+b+\"-\"+c+\"+\"+d+\"=\"+7)\n  exit()\nif a+b+c-d==7:\n  print(a+\"+\"+b+\"+\"+c+\"-\"+d+\"=\"+7)\n  exit()\nif a-b-c+d==7:\n  print(a+\"-\"+b+\"-\"+c+\"+\"+d+\"=\"+7)\n  exit()\nif a-b+c-d==7:\n  print(a+\"-\"+b+\"+\"+c+\"-\"+d+\"=\"+7)\n  exit()\nif a+b-c-d==7:\n  print(a+\"+\"+b+\"-\"+c+\"-\"+d+\"=\"+7)\n  exit()\nif a-b-c-d==7:\n  print(a+\"-\"+b+\"-\"+c+\"-\"+d+\"=\"+7)\n  exit()",
+        "error_type": "unsupported operand type(s) for +: 'int' and 'str'",
+        "error_line": "print(a+\"+\"+b+\"+\"+c+\"+\"+d+\"=\"+7)"
+    },
+    {
+        "code": "N = 4\nA = 'west'\nB = 'east'\nC = 'wait'\nans=0\nfor i in range(N):\n  ans+=len(set(A[i],B[i],C[i]))-1\nprint(ans) ",
+        "error_type": "set expected at most 1 argument, got 3",
+        "error_line": "ans+=len(set(A[i],B[i],C[i]))-1"
+    },
+    {
+        "code": "n = 4\na = 'west'\nb = 'east'\nc = 'wait'\nans = 0\nfor i in range(n):\n  ans += len(set(a[i], b[i], c[i])) - 1 \nprint(ans)",
+        "error_type": "set expected at most 1 argument, got 3",
+        "error_line": "ans += len(set(a[i], b[i], c[i])) - 1 "
+    }
+]

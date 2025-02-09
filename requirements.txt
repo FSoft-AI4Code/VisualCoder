@@ -1,4 +1,9 @@
-google-generativeai
 autopep8
-pyext
-datasets
+graphviz
+pandas
+torch
+torchtext==0.4.0
+tqdm
+scikit-learn
+astor
+anthropic
